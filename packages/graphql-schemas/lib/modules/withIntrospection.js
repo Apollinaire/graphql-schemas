@@ -1,13 +1,24 @@
 import React from 'react';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
-function withIntrospection(wrappedComponent){
-  const res = class extends React.Component{
-    render(){
-      return null;
+function withIntrospection(wrappedComponent) {
+  return graphql(
+    gql`
+      query getIntrospectionSchema($endpoint: String) {
+        getSchema(endpoint: $endpoint)
+      }
+    `,
+    {
+      alias: 'withIntrospection',
+      props(props) {
+        const { data } = props;
+        return {
+          introspectionSchema: { ...data },
+        };
+      },
     }
-  }
-  res.displayName = `withIntrospection(${wrappedComponent.displayName || ''})`;
-  return res;
+  );
 }
 
 export default withIntrospection;
