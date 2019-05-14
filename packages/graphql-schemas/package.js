@@ -9,16 +9,17 @@ Package.onUse(function (api) {
     'promise',
 
     // vulcan core
-    'vulcan:core@1.12.12',
+    'vulcan:core',
 
     // vulcan packages
-    'vulcan:forms@1.12.12',
-    'vulcan:accounts@1.12.12',
-    'vulcan:ui-bootstrap@1.12.12',
+    'vulcan:forms',
+    'vulcan:accounts',
+    'vulcan:ui-bootstrap',
     
   ]);
 
   api.addFiles('lib/stylesheets/custom-css-bootstrap-magic-2019-02-04.css');
+  api.addFiles('lib/stylesheets/SchemaDisplay.css');
 
   api.mainModule('lib/server/main.js', 'server');
   api.mainModule('lib/client/main.js', 'client');
