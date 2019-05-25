@@ -90,7 +90,6 @@ class DagreD3 extends React.Component {
     }
 
     render() {
-      console.log('daaaag')
         return (
             <svg className='dagre-d3' ref={(r) => {this.nodeTree = r}}
                  width={this.props.height}

@@ -54,6 +54,23 @@ class Home extends React.Component {
   };
 
   render() {
+    const { nodes, edges } = this.state;
+
+
+    // const nodes={
+    //   'A': {},
+    //   'B': {},
+    //   'C': {},
+    //   'D': {},
+    //   'E': {},
+    // };
+    // const edges = [
+    //   ['A','B', {}],
+    //   ['B','C', {}],
+    //   ['B','D', {}],
+    //   ['C','E', {}],
+    //   ['D','E', {}],
+    // ]
     return (
       <div>
         <Components.FormControl
@@ -63,7 +80,7 @@ class Home extends React.Component {
           onChange={this.handleEnpointChange}
         />
         <Components.Button onClick={this.handleSubmit}>Submit</Components.Button>
-        <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={this.state.nodes} edges={this.state.edges} interactive />}</div>
+        <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={nodes} edges={edges}  />}</div>
       </div>
     );
   }
