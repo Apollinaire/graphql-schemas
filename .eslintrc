@@ -32,13 +32,13 @@
     "comma-dangle": 0,
     "key-spacing": 0,
     "no-extra-boolean-cast": 0,
-    "no-undef": 1,
+    "no-undef": 2,
     "no-unused-vars": [1, {
       "vars": "all",
       "args": "none",
       "varsIgnorePattern": "React|PropTypes|Component"
     }],
-    "no-console": 1,
+    "no-console": 0,
     "react/prop-types": 0,
     "meteor/audit-argument-checks": 0,
     "no-case-declarations": 0

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import * as dagreD3 from 'dagre-d3'
+import * as DagreD3Lib from 'dagre-d3'
 import * as d3 from 'd3'
 
 import isEqual from 'react-fast-compare'
@@ -41,7 +41,7 @@ class DagreD3 extends React.Component {
     }
 
     renderDag() {
-        let g = new dagreD3.graphlib.Graph().setGraph({});
+        let g = new DagreD3Lib.graphlib.Graph().setGraph({});
 
 
         for (let [id, node] of Object.entries(this.props.nodes))
@@ -62,7 +62,8 @@ class DagreD3 extends React.Component {
         }
 
         // Create the renderer
-        let render = new dagreD3.render();
+        // eslint-disable-next-line
+        let render = new DagreD3Lib.render();
 
         // set up custom shape renderers
         if (this.props.shapeRenderers)

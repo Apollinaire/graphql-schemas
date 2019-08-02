@@ -58,7 +58,7 @@ const mutations = {
     },
 
     mutation(root, {selector, data}, context) {
-      const document = context.Movies.findOne( {_id: selector.documentId || selector._id});
+      const document = context.Movies.findOne( {_id: selector.documentId || selector._id});
       // Utils.performCheck is applying this.check(context.currentUser, document); and returns an error if the result is false or if there is no user or document, ending the mutation before updating the db
       Utils.performCheck(this.check, context.currentUser, document);
 
@@ -84,7 +84,7 @@ const mutations = {
     },
 
     mutation(root, { selector }, context) {
-      const document = context.Movies.findOne({ _id: selector.documentId || selector._id });
+      const document = context.Movies.findOne({ _id: selector.documentId || selector._id });
       Utils.performCheck(this.check, context.currentUser, document);
 
       return deleteMutator({
