@@ -14,7 +14,7 @@ export function getNodesAndEdges(introspection) {
 
   const edges = [];
   forEach(nodes, (type, typeName) => {
-    forEach(type.fields, (field, index) => {
+    forEach(type.fields, field => {
       if (nodes.hasOwnProperty(field.type.name)) {
         edges.push([typeName, field.type.name, {label: '', style: 'color: white;'}])
       } else if (field.type.kind === 'LIST' && nodes.hasOwnProperty(field.type.ofType.name)) {

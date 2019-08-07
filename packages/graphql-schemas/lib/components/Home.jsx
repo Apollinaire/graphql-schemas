@@ -2,6 +2,7 @@ import React from 'react';
 import { registerComponent, Components } from 'meteor/vulcan:core';
 import { buildClientSchema, introspectionFromSchema } from 'graphql';
 import SchemaDisplay from './SchemaDisplay';
+import TextTypes from './TextTypes';
 import { withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import { getTypeGraph } from '../modules/utils/buildGraph';
@@ -35,14 +36,16 @@ class Home extends React.Component {
       // console.log(data.getSchema);
       const schema = buildClientSchema(data.getSchema);
       const introspection = introspectionFromSchema(schema);
-      console.log(introspection);
+      // console.log(introspection);
       const { nodes, edges } = getNodesAndEdges(introspection)
-      console.log(nodes, edges)
+      // console.log(nodes, edges)
       const simpleSchema = simplifySchema(introspection.__schema);
-      // console.log(simpleSchema);
+      console.log(simpleSchema);
       assignTypesAndIDs(simpleSchema);
       const typeGraph = getTypeGraph(simpleSchema);
+      // console.log(typeGraph)
       this.setState({
+        simpleSchema,
         schema,
         typeGraph,
         nodes,
@@ -80,7 +83,10 @@ class Home extends React.Component {
           onChange={this.handleEnpointChange}
         />
         <Components.Button onClick={this.handleSubmit}>Submit</Components.Button>
-        <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={nodes} edges={edges}  />}</div>
+        <div>
+          <TextTypes simpleSchema={this.state.simpleSchema} />
+        </div>
+        {/* <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={nodes} edges={edges}  />}</div> */}
       </div>
     );
   }
