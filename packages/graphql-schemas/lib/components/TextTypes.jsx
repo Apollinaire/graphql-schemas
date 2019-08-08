@@ -2,16 +2,30 @@ import React from 'react';
 import _map from 'lodash/map';
 import _orderBy from 'lodash/orderBy';
 
-const TypeDefinition = ({ name, fields, inputFields }) => {
+const TypeDefinition = ({ name, fields, inputFields, possibleTypes, enumValues }) => {
   return (
     <div className='col'>
       <h1>{name}</h1>
       <ul>
         {_map(fields, (value, key) => (
-          <li key={key}>{key}: {value.type.kind}</li>
+          <li key={key}>
+            {key}: {value.type.name}
+          </li>
         ))}
         {_map(inputFields, (value, key) => (
-          <li key={key}>{key}: {value.type.kind}</li>
+          <li key={key}>
+            {key}: {value.type.name}
+          </li>
+        ))}
+        {_map(possibleTypes, (value, key) => (
+          <li key={key}>
+            {key}: {value.type.name}
+          </li>
+        ))}
+        {_map(enumValues, (value, key) => (
+          <li key={key}>
+            {key}: {value.name}
+          </li>
         ))}
       </ul>
     </div>
