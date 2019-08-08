@@ -9,6 +9,7 @@ import { getTypeGraph } from '../modules/utils/buildGraph';
 import { simplifySchema } from '../modules/utils/introspection';
 import { assignTypesAndIDs } from '../modules/utils/assignTyepsAndIds';
 import { getNodesAndEdges } from '../modules/utils/getNodesAndEdges';
+import DocExplorer from './DocExplorer';
 
 class Home extends React.Component {
   state = {
@@ -83,6 +84,9 @@ class Home extends React.Component {
           onChange={this.handleEnpointChange}
         />
         <Components.Button onClick={this.handleSubmit}>Submit</Components.Button>
+        <div>
+          {this.state.simpleSchema && <DocExplorer simpleSchema={this.state.simpleSchema}/>}
+        </div>
         <div>
           <TextTypes simpleSchema={this.state.simpleSchema} />
         </div>
