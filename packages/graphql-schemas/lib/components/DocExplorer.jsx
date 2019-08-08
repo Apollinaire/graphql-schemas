@@ -10,12 +10,21 @@ const DocItem = ({ index, type, updateSelectedAt }) => {
     <div className='col'>
       <h4>{type.name}</h4>
       {_map(fields, field => (
-        <a className='row' key={field.name} onClick={(e) => {e.stopPropagation();updateSelectedAt(index, field.type.name)}}>
+        <a
+          className='row'
+          key={field.name}
+          onClick={e => {
+            e.stopPropagation();
+            updateSelectedAt(index, field.type.name);
+          }}
+        >
           {field.name}
         </a>
       ))}
       {_map(leaves, field => (
-        <div className='row' key={field.name}>{field.name}</div>
+        <div className='row' key={field.name}>
+          {field.name}
+        </div>
       ))}
     </div>
   );
@@ -33,7 +42,7 @@ const DocExplorer = ({ simpleSchema }) => {
       <div className='row'>
         <div className='col'>
           <h4>Types</h4>
-          {_map(types, (type) => (
+          {_map(types, type => (
             <div
               className='row'
               key={type.name}
