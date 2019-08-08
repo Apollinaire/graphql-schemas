@@ -2,35 +2,45 @@ import React from 'react';
 import _map from 'lodash/map';
 import _orderBy from 'lodash/orderBy';
 
-const TypeDefinition = ({ name, fields }) => {
+const TypeDefinition = ({ name, fields, inputFields }) => {
   return (
     <div className='col'>
       <h1>{name}</h1>
       <ul>
         {_map(fields, (value, key) => (
-          <li key={key}>{key}</li>
+          <li key={key}>{key}: {value.type.kind}</li>
+        ))}
+        {_map(inputFields, (value, key) => (
+          <li key={key}>{key}: {value.type.kind}</li>
         ))}
       </ul>
     </div>
   );
 };
 
+const kindMap = {
+  OBJECT: 10,
+  LIST: 20,
+  INTERFACE: 30,
+  UNION: 40,
+  NON_NULL: 50,
+  INPUT_OBJECT: 60,
+  ENUM: 70,
+  SCALAR: 80,
+};
+
 const iteratees = [
   v => (v.name === 'Query' ? 1 : v.name === 'Mutation' ? 2 : 3),
-  v => v.name.charAt(0) === '_' ? 1 : 0,
-  'kind',
+  v => (v.name.charAt(0) === '_' ? 1 : 0),
+  ({ kind }) => kindMap[kind] || 100,
   'name',
 ];
-
-const orders = [
-  'asc', 'asc', 'desc', 'desc'
-]
 
 class TextTypes extends React.PureComponent {
   render() {
     const { simpleSchema } = this.props;
     if (!simpleSchema) return 'nothing';
-    const types = _orderBy(simpleSchema.types, iteratees, orders);
+    const types = _orderBy(simpleSchema.types, iteratees);
     return (
       <div>
         <div className='row'>
