@@ -3,6 +3,18 @@
 A SimpleSchema-compatible JSON schema
 
 */
+import SimpleSchema from 'simpl-schema';
+
+
+const subType = {
+  field: {
+    type: String,
+    optional: true,
+    canRead: ['guests']
+  }
+}
+
+
 
 const schema = {
 
@@ -45,14 +57,7 @@ const schema = {
     canCreate: ['members'],
     canUpdate: ['members'],
   },
-  year: {
-    // label: 'Yearz',
-    type: Number,
-    optional: true,
-    canRead: ['guests'],
-    canCreate: ['members'],
-    canUpdate: ['members'],
-  },
+  year: new SimpleSchema(subType),
   review: {
     label: 'Review',
     type: String,

@@ -19,8 +19,8 @@ const Movies = createCollection({
 
   schema: schema,
 
-  resolvers: resolvers,
-  // resolvers: getDefaultResolvers({typeName:'Movie'}),
+  // resolvers: resolvers,
+  resolvers: getDefaultResolvers({typeName:'Movie'}),
 
   mutations: mutations,
   // mutations: getDefaultMutations({typeName: 'Movie'}),
