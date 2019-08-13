@@ -1,22 +1,28 @@
-import SimpleSchema from 'simpl-schema';
+import TypeSchema from './TypeSchema';
 
 const schema = {
   _id: {
     type: String,
     optional: true,
-    canRead: ['guests']
-  },
-  createdAt: {
-    type: Date,
-    optional: true,
     canRead: ['guests'],
-    onCreate: () => new Date(),
   },
-  endpoint: {
-    type: String,
-    optional: false,
+  fieldOne: {
+    type: TypeSchema,
     canRead: ['guests'],
-    searchable: true,
+    canCreate: ['admin'],
+  },
+  fieldTwo: {
+    type: TypeSchema,
+    canRead: ['guests'],
+    canCreate: ['admin'],
+    canUpdate: ['admin']
+  },
+  fieldThree: {
+    type: Array,
+    canRead: ['guests'],
+  },
+  'fieldThree.$': {
+    type: TypeSchema,
   },
 };
 

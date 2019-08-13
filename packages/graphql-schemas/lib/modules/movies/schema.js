@@ -14,7 +14,7 @@ const subType = {
   }
 }
 
-
+export const subTypeSchema = new SimpleSchema(subType)
 
 const schema = {
 
@@ -57,7 +57,7 @@ const schema = {
     canCreate: ['members'],
     canUpdate: ['members'],
   },
-  year: new SimpleSchema(subType),
+  year: {type: subTypeSchema, canRead: ['guests']},
   review: {
     label: 'Review',
     type: String,

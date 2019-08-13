@@ -1,8 +1,8 @@
 // The Movies collection
-import './movies/collection.js';
-
+import './movies/collection';
+import './schemas/collection';
 // Components
-import './components.js';
+import './components';
 
 // Routes
-import './routes.js';
+import './routes';
