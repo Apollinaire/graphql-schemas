@@ -38,11 +38,11 @@ class Home extends React.Component {
       const schema = buildClientSchema(data.getSchema);
       const introspection = introspectionFromSchema(schema);
       // console.log(introspection);
-      const { nodes, edges } = getNodesAndEdges(introspection)
+      const { nodes, edges } = getNodesAndEdges(introspection);
       // console.log(nodes, edges)
       const simpleSchema = simplifySchema(introspection.__schema);
-      console.log(simpleSchema);
       assignTypesAndIDs(simpleSchema);
+      console.log(simpleSchema);
       const typeGraph = getTypeGraph(simpleSchema);
       // console.log(typeGraph)
       this.setState({
@@ -50,7 +50,7 @@ class Home extends React.Component {
         schema,
         typeGraph,
         nodes,
-        edges
+        edges,
       });
     } catch (error) {
       console.error(error);
@@ -59,7 +59,6 @@ class Home extends React.Component {
 
   render() {
     const { nodes, edges } = this.state;
-
 
     // const nodes={
     //   'A': {},
@@ -77,6 +76,7 @@ class Home extends React.Component {
     // ]
     return (
       <div>
+        <Components.AccountsLoginForm />
         <Components.FormControl
           type='search'
           placeholder='sidebar.io/graphql'
@@ -84,12 +84,8 @@ class Home extends React.Component {
           onChange={this.handleEnpointChange}
         />
         <Components.Button onClick={this.handleSubmit}>Submit</Components.Button>
-        <div>
-          {this.state.simpleSchema && <DocExplorer simpleSchema={this.state.simpleSchema}/>}
-        </div>
-        <div>
-          {/* <TextTypes simpleSchema={this.state.simpleSchema} /> */}
-        </div>
+        <div>{this.state.simpleSchema && <DocExplorer simpleSchema={this.state.simpleSchema} />}</div>
+        <div>{/* <TextTypes simpleSchema={this.state.simpleSchema} /> */}</div>
         {/* <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={nodes} edges={edges}  />}</div> */}
       </div>
     );

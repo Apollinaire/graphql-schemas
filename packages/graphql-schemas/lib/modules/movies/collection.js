@@ -22,8 +22,8 @@ const Movies = createCollection({
   // resolvers: resolvers,
   resolvers: getDefaultResolvers({typeName:'Movie'}),
 
-  mutations: mutations,
-  // mutations: getDefaultMutations({typeName: 'Movie'}),
+  // mutations: mutations,
+  mutations: getDefaultMutations({typeName: 'Movie'}),
 });
 
 export default Movies;

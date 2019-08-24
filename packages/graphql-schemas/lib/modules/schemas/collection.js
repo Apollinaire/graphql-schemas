@@ -1,5 +1,8 @@
 import { createCollection, getDefaultResolvers, getDefaultMutations } from 'meteor/vulcan:core';
 import schema from './schema';
+import './TypeSchema';
+import './FieldSchemas';
+import './ArgumentSchema';
 
 const Schemas = createCollection({
   collectionName: 'Schemas',

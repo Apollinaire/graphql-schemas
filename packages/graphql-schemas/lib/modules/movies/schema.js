@@ -57,7 +57,7 @@ const schema = {
     canCreate: ['members'],
     canUpdate: ['members'],
   },
-  year: {type: subTypeSchema, canRead: ['guests']},
+  // year: {type: subTypeSchema, canRead: ['guests']},
   review: {
     label: 'Review',
     type: String,

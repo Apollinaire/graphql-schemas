@@ -1,4 +1,5 @@
-import TypeSchema from './TypeSchema';
+import { getType } from 'meteor/vulcan:core';
+import { fieldPermissions } from './permissions';
 
 const schema = {
   _id: {
@@ -6,24 +7,27 @@ const schema = {
     optional: true,
     canRead: ['guests'],
   },
-  fieldOne: {
-    type: TypeSchema,
-    canRead: ['guests'],
-    canCreate: ['admin'],
+  queryType: {
+    ...getType('Type'),
+    ...fieldPermissions,
   },
-  fieldTwo: {
-    type: TypeSchema,
-    canRead: ['guests'],
-    canCreate: ['admin'],
-    canUpdate: ['admin']
+
+  mutationType: {
+    ...getType('Type'),
+    ...fieldPermissions,
   },
-  fieldThree: {
+
+  subscriptionType: {
+    ...getType('Type'),
+    ...fieldPermissions,
+  },
+  types: {
     type: Array,
-    canRead: ['guests'],
+    ...fieldPermissions,
   },
-  'fieldThree.$': {
-    type: TypeSchema,
-  },
+  'types.$': {
+    ...getType('Type'),
+  }
 };
 
 export default schema;

@@ -9,13 +9,6 @@ const getSchemaResolver = {
     async getSchema(root, args, context) {
       const { endpoint } = args;
 
-      // const client = new ApolloClient({
-      //   ssrMode: false,
-      //   networkInterface: createNetworkInterface({
-      //     uri: endpoint,
-      //     opts: { method: 'POST' },
-      //   }),
-      // });
       console.log('in getschema');
 
       const { data = {}, headers, status } = await axios.post('https://sidebar.io/graphql', {

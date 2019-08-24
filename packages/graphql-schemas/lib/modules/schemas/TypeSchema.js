@@ -1,37 +1,32 @@
 import SimpleSchema from 'simpl-schema';
-import {addType } from 'meteor/vulcan:lib'
+import { getType, addTypeAndResolvers } from 'meteor/vulcan:core';
+import { fieldPermissions } from './permissions';
 
 const Type = {
+  name: {
+    type: String,
+    ...fieldPermissions
+  },
   fields: {
     type: Array,
-    canRead: ['guests'],
-    canCreate: ['admin'],
-    canUpdate: ['admin'],
-    optional: true,
+    ...fieldPermissions
   },
   'fields.$': {
-    type: String, // todo: improve here
-    canRead: ['guests'],
+    ...getType('Field'), // todo: improve here
+    ...fieldPermissions
   },
   kind: {
     type: String,
-    canRead: ['guests'],
-    canCreate: ['admin'],
-    canUpdate: ['admin'],
-    optional: true,
-  },
-  name: {
-    type: String,
-    canRead: ['guests'],
-    optional: true,
+    ...fieldPermissions
   },
   description: {
     type: String,
-    canRead: ['guests'],
-    optional: true,
+    ...fieldPermissions
   },
 };
 
+// console.log(Type);
+
 export default new SimpleSchema(Type);
 
-addType({typeName: 'TestSchema', schema: (new SimpleSchema(Type)._schema)})
+addTypeAndResolvers({ typeName: 'Type', schema: new SimpleSchema(Type) });
