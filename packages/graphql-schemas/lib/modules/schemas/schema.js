@@ -1,11 +1,29 @@
-import { getType } from 'meteor/vulcan:core';
+import { getType, Utils } from 'meteor/vulcan:core';
 import { fieldPermissions } from './permissions';
+import SimpleSchema from 'simpl-schema';
 
 const schema = {
   _id: {
     type: String,
     optional: true,
     canRead: ['guests'],
+  },
+  slug: {
+    type: String,
+    optional: true,
+    canRead: ['guests'],
+    onCreate: ({ document = {} }) => {
+      const { endpoint, _id } = document;
+      if(!endpoint) return _id;
+      const basicSlug = Utils.slugify(endpoint);
+      return Utils.getUnusedSlugByCollectionName('endpoint', basicSlug)
+    }
+  },
+  endpoint: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Url,
+    optional: false,
+    ...fieldPermissions,
   },
   queryType: {
     ...getType('Type'),
@@ -27,7 +45,7 @@ const schema = {
   },
   'types.$': {
     ...getType('Type'),
-  }
+  },
 };
 
 export default schema;

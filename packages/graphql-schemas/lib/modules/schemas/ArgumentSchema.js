@@ -1,5 +1,5 @@
 import SimpleSchema from 'simpl-schema';
-import { getType, addTypeAndResolvers } from 'meteor/vulcan:core';
+import { addTypeAndResolvers } from 'meteor/vulcan:core';
 import {fieldPermissions} from './permissions';
 
 const schema = {
@@ -12,7 +12,7 @@ const schema = {
     ...fieldPermissions,
   },
   type: {
-    ...getType('Type'),
+    type: String,
     ...fieldPermissions,
   },
 };

@@ -12,11 +12,14 @@ const schema = {
     ...fieldPermissions,
   },
   args: {
-    ...getType('Argument'),
+    type: Array,
     ...fieldPermissions,
   },
+  'args.$': {
+    ...getType('Argument')
+  },
   type: {
-    ...getType('Type'),
+    type: String, // only put a typename here to keep it flat.
     ...fieldPermissions,
   },
 };

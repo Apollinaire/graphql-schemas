@@ -1,5 +1,6 @@
 import { createCollection, getDefaultResolvers, getDefaultMutations } from 'meteor/vulcan:core';
 import schema from './schema';
+import './permissions'
 import './TypeSchema';
 import './FieldSchemas';
 import './ArgumentSchema';
