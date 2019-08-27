@@ -87,6 +87,9 @@ class Home extends React.Component {
         <div>{this.state.simpleSchema && <DocExplorer simpleSchema={this.state.simpleSchema} />}</div>
         <div>{/* <TextTypes simpleSchema={this.state.simpleSchema} /> */}</div>
         {/* <div className='dagreD3Graph'>{this.state.schema && <SchemaDisplay nodes={nodes} edges={edges}  />}</div> */}
+        <div>
+          <Components.SchemaList />
+        </div>
       </div>
     );
   }

@@ -16,13 +16,14 @@ const schema = {
       const { endpoint, _id } = document;
       if(!endpoint) return _id;
       const basicSlug = Utils.slugify(endpoint);
-      return Utils.getUnusedSlugByCollectionName('endpoint', basicSlug)
+      return Utils.getUnusedSlugByCollectionName('Schemas', basicSlug)
     }
   },
   endpoint: {
     type: String,
     regEx: SimpleSchema.RegEx.Url,
     optional: false,
+    searchable: true,
     ...fieldPermissions,
   },
   queryType: {
