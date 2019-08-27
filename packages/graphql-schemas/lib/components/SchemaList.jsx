@@ -1,7 +1,7 @@
 import React from 'react'
-
-import { registerComponent, withMulti } from 'meteor/vulcan:core';
 import gql from 'graphql-tag';
+import { Link } from 'react-router-dom';
+import { registerComponent, withMulti } from 'meteor/vulcan:core';
 
 const multiFragment = gql`
   fragment multiSchema on Schema {
@@ -30,7 +30,7 @@ const SchemaList = ({ loading, error, results, totalCount }) => {
       <p>{`total: ${totalCount}`}</p>
       <ul>
         {(results || []).map(function(schema, index) {
-          return <li key={index}>{schema.endpoint}</li>;
+          return <li key={index}><Link to={`/s/${schema.slug}`} >{schema.endpoint}</Link></li>;
         })}
       </ul>
     </div>

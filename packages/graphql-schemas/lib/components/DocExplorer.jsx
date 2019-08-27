@@ -92,7 +92,7 @@ const DocItem = ({ index, type, updateSelectedAt }) => {
   );
 };
 
-const DocExplorer = ({ simpleSchema }) => {
+const DocExplorer = ({ simpleSchema = {} }) => {
   const [selected, setSelected] = useState([]);
   const types = _filter(simpleSchema.types, type => type.kind === 'OBJECT' && type.name.slice(0, 2) !== '__');
   const updateSelectedAt = (index, value) => {
