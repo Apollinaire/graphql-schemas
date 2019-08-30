@@ -1,5 +1,5 @@
 {
-  "name": "Vulcan",
+  "name": "graphql-schemas",
   "version": "1.12.12",
   "engines": {
     "npm": "^3.0"
