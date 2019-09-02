@@ -1,7 +1,7 @@
 import React from 'react'
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
-import { registerComponent, withMulti } from 'meteor/vulcan:core';
+import { registerComponent, withMulti, Components } from 'meteor/vulcan:core';
 
 const multiFragment = gql`
   fragment multiSchema on Schema {

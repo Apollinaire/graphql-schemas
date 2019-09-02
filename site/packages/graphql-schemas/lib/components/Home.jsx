@@ -34,7 +34,7 @@ class Home extends React.Component {
         query: this.query,
         variables: { endpoint },
       });
-      // console.log(data.getSchema);
+      console.log(data.getSchema);
       const schema = buildClientSchema(data.getSchema);
       const introspection = introspectionFromSchema(schema);
       // console.log(introspection);

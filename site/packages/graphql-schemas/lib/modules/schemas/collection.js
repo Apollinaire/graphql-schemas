@@ -4,6 +4,7 @@ import './permissions'
 import './TypeSchema';
 import './FieldSchemas';
 import './ArgumentSchema';
+import './RestrictedTypeSchema';
 
 const Schemas = createCollection({
   collectionName: 'Schemas',

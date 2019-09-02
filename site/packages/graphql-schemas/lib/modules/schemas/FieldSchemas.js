@@ -2,6 +2,8 @@ import SimpleSchema from 'simpl-schema';
 import { getType, addTypeAndResolvers } from 'meteor/vulcan:core';
 import { fieldPermissions } from './permissions';
 
+import RestrictedType from './RestrictedTypeSchema';
+
 const schema = {
   name: {
     type: String,
@@ -19,7 +21,7 @@ const schema = {
     ...getType('Argument')
   },
   type: {
-    type: String, // only put a typename here to keep it flat.
+    ...getType('RestrictedType'), // avoid deep recursions
     ...fieldPermissions,
   },
 };

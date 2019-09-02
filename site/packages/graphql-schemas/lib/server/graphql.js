@@ -1,25 +1,40 @@
 import { addGraphQLResolvers, addGraphQLQuery } from 'meteor/vulcan:core';
-import { introspectionQuery } from 'graphql';
+import { getIntrospectionQuery } from 'graphql';
+import SimpleSchema from 'simpl-schema';
+import { UserInputError, ApolloError } from 'apollo-server';
 
 import axios from 'axios';
-// import gql from 'graphql-tag';
+
+const introspectionQuery = getIntrospectionQuery({descriptions: true})
 
 const getSchemaResolver = {
   Query: {
     async getSchema(root, args, context) {
       const { endpoint } = args;
 
-      console.log('in getschema');
-
-      const { data = {}, headers, status } = await axios.post('https://sidebar.io/graphql', {
-        query: introspectionQuery,
-      });
-      console.log(headers);
-      console.log(status);
-      return data.data;
+      // validate endpoint
+      // if (!SimpleSchema.RegEx.Url.test(endpoint)) {
+      //   throw new UserInputError('Invalid endpoint') 
+      // }
+      let __schema = {}
+      try {
+        const introspectionResult = await axios.post(endpoint, {
+          query: introspectionQuery,
+        });
+        if (introspectionResult.data && introspectionResult.data.data) {
+          __schema = introspectionResult.data.data.__schema
+        } else {
+          throw Error('no schema')
+        }
+      } catch (error) {
+        throw new ApolloError(error.message)
+      }
+      // validate schema
+      
+      return __schema;
     },
   },
 };
-
+// https://graphql-pokemon.now.sh
 addGraphQLResolvers(getSchemaResolver);
-addGraphQLQuery(`getSchema(endpoint: String!): JSON`);
+addGraphQLQuery(`getSchema(endpoint: String!): Schema`);

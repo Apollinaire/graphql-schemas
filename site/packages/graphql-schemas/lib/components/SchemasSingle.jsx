@@ -1,44 +1,23 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { mapProps } from 'recompose';
-import { registerComponent, withSingle } from 'meteor/vulcan:core';
-import DocExplorer from './DocExplorer';
 
-const singleFragment = gql`
-  fragment singleSchema on Schema {
-    _id
-    slug
-    endpoint
-    queryType {
-      name
-      fields {
-        name
-      }
-    }
-    mutationType {
-      name
-      fields {
-        name
-      }
-    }
-    types {
-      name
-      fields {
-        name
-      }
-    }
-  }
-`;
+import { mapProps } from 'recompose';
+import { registerComponent, withSingle, getFragment } from 'meteor/vulcan:core';
+import DocExplorer from './DocExplorer';
+import { singleSchemaFragment } from '../modules/schemas/fragments';
 
 const singleOptions = {
   collectionName: 'Schemas',
-  fragment: singleFragment,
+  fragment: singleSchemaFragment,
 };
 
 const SchemasSingle = props => {
   console.log(props);
   const { document } = props;
-  return <DocExplorer types={document.types} queryType={document.queryType} mutationType={document.mutationType} />;
+  return document ? (
+    <DocExplorer types={document.types} queryType={document.queryType} mutationType={document.mutationType} />
+  ) : (
+    'loading...'
+  );
 };
 const propsMapper = props => ({
   ...props,
