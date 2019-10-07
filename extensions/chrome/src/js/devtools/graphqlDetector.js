@@ -19,7 +19,7 @@ function graphqlDetector(req) {
   if (isValidRequest(request, response)) {
     // get the request
     //body of the request
-    let reqBody = {};
+    let reqBody;
     try {
       reqBody = JSON.parse(request.postData.text);
     } catch (error) {
@@ -27,6 +27,15 @@ function graphqlDetector(req) {
       console.error(error);
       return;
     }
+
+    // apollo 1 support
+    if (Array.isArray(reqBody)) {
+      if (typeof reqBody[0] === 'object') {
+        reqBody = reqBody[0]; // a bit bad but should cover most cases for apollo 1
+      } else reqBody = {};
+    }
+
+    console.log(reqBody)
 
     if (typeof reqBody.query === 'string') {
       // create hash
