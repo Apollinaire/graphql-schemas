@@ -23,7 +23,6 @@ export const fullTypeFragment = gql`
     }
   }
 `;
-console.log(fullTypeFragment)
 // export const singleSchemaFragment = gql`
 //   fragment singleSchema on Schema {
 //     _id
