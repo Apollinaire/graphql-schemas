@@ -1,13 +1,16 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import graphqlDetector from './devtools/graphqlDetector';
+import GraphQLDetector from './devtools/graphqlDetector';
+
+const g = new GraphQLDetector();
 
 class App extends React.Component {
   constructor() {
     super();
     chrome.devtools.panels.create('GraphQL Schemas', null, 'devtools.html');
     this.state = {};
+    g.linkApp(this)
   }
   componentDidMount() {
     chrome.devtools.network.onRequestFinished.addListener(graphqlDetector.bind(this));
