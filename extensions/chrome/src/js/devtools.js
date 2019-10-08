@@ -10,13 +10,8 @@ class App extends React.Component {
     super();
     chrome.devtools.panels.create('GraphQL Schemas', null, 'devtools.html');
     this.state = {};
-    g.linkApp(this)
+    g.linkApp(this);
   }
-  componentDidMount() {
-    chrome.devtools.network.onRequestFinished.addListener(graphqlDetector.bind(this));
-  }
-
-  componentWillUnmount() {}
 
   render() {
     const queries = Object.keys(this.state).map(key => ({ key, ...this.state[key] })) || [];
@@ -25,16 +20,22 @@ class App extends React.Component {
       <div style={{ backgroundColor: 'white' }}>
         {queries.map(query => {
           return (
-            <div key={query.key}>
-              <h2>Query</h2>
+            <details key={query.key}>
+              <summary>
+                <strong>{`Query ${query.requestBody.operationName} to ${query.url}`}</strong>
+              </summary>
               <pre>
-                <code>{JSON.stringify(query.reqBody, null, 2)}</code>
+                <code>{JSON.stringify(query.requestBody.variables, null, 2)}</code>
+              </pre>
+              <pre>
+                <code>{query.requestBody.query}</code>
               </pre>
               <h2>Response</h2>
               <pre>
-                <code>{JSON.stringify(query.resBody, null, 2)}</code>
+                <code>{JSON.stringify(query.responseBody, null, 2)}</code>
               </pre>
-            </div>
+              <hr />
+            </details>
           );
         })}
       </div>

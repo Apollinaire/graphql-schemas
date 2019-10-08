@@ -17,6 +17,7 @@ function isValidRequest(request, response) {
 class GraphQLDetector {
   constructor() {
     this.queries = {};
+    chrome.devtools.network.onRequestFinished.addListener(this.eventHandler)
   }
   eventHandler = req => {
     if (typeof req !== 'object') return;
@@ -35,7 +36,7 @@ class GraphQLDetector {
 
       if (_.isObject(requestBody)) {
         req.getContent(responseBody => {
-          this.queryHandler(requestBody, responseBody, request.url);
+          this.queryHandler(requestBody, JSON.parse(responseBody), request.url);
         });
       }
     }
