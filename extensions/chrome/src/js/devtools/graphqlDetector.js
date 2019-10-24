@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import hashCode from './hashCode';
+import axios from 'axios';
 
 function isValidRequest(request, response) {
   return (
@@ -17,7 +18,7 @@ function isValidRequest(request, response) {
 class GraphQLDetector {
   constructor() {
     this.queries = {};
-    chrome.devtools.network.onRequestFinished.addListener(this.eventHandler)
+    chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
   eventHandler = req => {
     if (typeof req !== 'object') return;
@@ -43,13 +44,23 @@ class GraphQLDetector {
   };
 
   queryHandler = (requestBody, responseBody, url) => {
-    if (_.isObject(requestBody) && _.isString(requestBody.query)) {
-      const hash = hashCode(requestBody.query);
-      this.queries[hash] = {
-        requestBody,
-        responseBody,
-        url,
-      };
+    if (_.isObject(requestBody) && _.isString(requestBody.query) && _.isString(url)) {
+      const hash = hashCode(url + requestBody.query);
+      if (this.queries[hash]) {
+        this.queries[hash] = {
+          requestBody,
+          responseBody,
+          url,
+          hits: this.queries[hash].hits + 1,
+        };
+      } else {
+        this.queries[hash] = {
+          requestBody,
+          responseBody,
+          url,
+          hits: 1,
+        };
+      }
       if (this.App && _.isFunction(this.App.setState)) {
         this.App.setState({ [hash]: { requestBody, responseBody, url } });
       }

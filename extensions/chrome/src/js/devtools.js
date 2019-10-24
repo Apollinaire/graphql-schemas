@@ -3,12 +3,12 @@ import { render } from 'react-dom';
 
 import GraphQLDetector from './devtools/graphqlDetector';
 
+chrome.devtools.panels.create('GraphQL Schemas', null, 'devtools.html');
 const g = new GraphQLDetector();
 
 class App extends React.Component {
   constructor() {
     super();
-    chrome.devtools.panels.create('GraphQL Schemas', null, 'devtools.html');
     this.state = {};
     g.linkApp(this);
   }
