@@ -1,6 +1,8 @@
 import _ from 'underscore';
 import hashCode from './hashCode';
 import axios from 'axios';
+import jsonCleaner from './jsonCleaner';
+import queryCleaner from './queryCleaner';
 
 function isValidRequest(request, response) {
   return (
@@ -44,27 +46,50 @@ class GraphQLDetector {
   };
 
   queryHandler = (requestBody, responseBody, url) => {
-    if (_.isObject(requestBody) && _.isString(requestBody.query) && _.isString(url)) {
+    // todo : handle errors
+    // todo : handle authorization header
+    if (
+      _.isObject(requestBody) &&
+      _.isString(requestBody.query) &&
+      _.isString(url) &&
+      _.isObject(responseBody) &&
+      !_.isEmpty(responseBody.data)
+    ) {
       const hash = hashCode(url + requestBody.query);
+      // set or update the local state for queries
       if (this.queries[hash]) {
         this.queries[hash] = {
           requestBody,
-          responseBody,
+          responseBody: responseBody.data,
           url,
           hits: (this.queries[hash].hits || 1) + 1,
         };
       } else {
         this.queries[hash] = {
           requestBody,
-          responseBody,
+          responseBody: responseBody.data,
           url,
           hits: 1,
         };
       }
+      // update the app state
       if (this.App && _.isFunction(this.App.setState)) {
         this.App.setState({ [hash]: this.queries[hash] });
       }
+      // contribute to the site
+      this.queryContributor(requestBody.query, responseBody.data, url);
     }
+  };
+
+  queryContributor = (query, responseBody, url) => {
+    // remove arguments' values in the querystring
+    const cleanQuery = queryCleaner(query);
+
+    // replace leaf values in the responseBody by their type
+    const cleanResponse = jsonCleaner(responseBody);
+
+    // todo push the contribution
+    // axios.post(...)
   };
 
   linkApp = component => {

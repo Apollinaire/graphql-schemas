@@ -15,7 +15,7 @@ class App extends React.Component {
 
   render() {
     const queries = Object.keys(this.state).map(key => ({ key, ...this.state[key] })) || [];
-    console.log(queries);
+    // console.log(queries);
     return (
       <div style={{ backgroundColor: 'white' }}>
         {queries.map(query => {
