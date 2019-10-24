@@ -51,7 +51,7 @@ class GraphQLDetector {
           requestBody,
           responseBody,
           url,
-          hits: this.queries[hash].hits + 1,
+          hits: (this.queries[hash].hits || 1) + 1,
         };
       } else {
         this.queries[hash] = {
@@ -62,7 +62,7 @@ class GraphQLDetector {
         };
       }
       if (this.App && _.isFunction(this.App.setState)) {
-        this.App.setState({ [hash]: { requestBody, responseBody, url } });
+        this.App.setState({ [hash]: this.queries[hash] });
       }
     }
   };

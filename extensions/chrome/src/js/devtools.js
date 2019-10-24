@@ -22,7 +22,10 @@ class App extends React.Component {
           return (
             <details key={query.key}>
               <summary>
-                <strong>{`Query ${query.requestBody.operationName} to ${query.url}`}</strong>
+                <strong>
+                  {`Query ${query.requestBody.operationName} to ${query.url} `}
+                  <span style={{ color: 'red' }}>{query.hits}</span>
+                </strong>
               </summary>
               <pre>
                 <code>{JSON.stringify(query.requestBody.variables, null, 2)}</code>
