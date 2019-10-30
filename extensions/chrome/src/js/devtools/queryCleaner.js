@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import { Source, parse, print } from 'graphql';
+import { parse, print } from 'graphql';
 
 const replaceArgumentValues = argument => {
   switch (argument.kind) {
@@ -91,9 +91,7 @@ const getAstWithoutArguments = ast => {
 };
 
 const queryCleaner = query => {
-  // build the ast from the query
-  const documentAST = parse(new Source(query));
-
+  const documentAST = parse(query);
   return print(getAstWithoutArguments(documentAST));
 };
 
