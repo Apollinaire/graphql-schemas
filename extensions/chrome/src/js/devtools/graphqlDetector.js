@@ -84,10 +84,8 @@ class GraphQLDetector {
   queryContributor = (query, responseBody, url) => {
     // remove arguments' values in the querystring
     const cleanQuery = queryCleaner(query);
-
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
-
     // todo push the contribution
     // axios.post(...)
   };

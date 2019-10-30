@@ -51,12 +51,17 @@ var options = {
         test: /\.(js|jsx)$/,
         loader: "babel-loader",
         exclude: /node_modules/
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto",
       }
     ]
   },
   resolve: {
     alias: alias,
-    extensions: fileExtensions.map(extension => ("." + extension)).concat([".jsx", ".js", ".css"])
+    extensions: fileExtensions.map(extension => ("." + extension)).concat([".jsx", ".js", ".mjs", ".css"])
   },
   plugins: [
     // clean the build folder
