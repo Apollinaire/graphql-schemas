@@ -5,12 +5,12 @@ const jsonCleaner = (obj, parentKey) => {
   if (parentKey === '__typename' && _.isString(obj)) {
     return obj;
   }
+  if (_.isArray(obj)) {
+    return _.map(obj, jsonCleaner);
+  }
   if (_.isObject(obj)) {
     // recursion
     return _.mapObject(obj, jsonCleaner);
-  }
-  if (_.isArray(obj)) {
-    return _.map(obj, jsonCleaner);
   }
   if (_.isString(obj)) {
     return 'string';
