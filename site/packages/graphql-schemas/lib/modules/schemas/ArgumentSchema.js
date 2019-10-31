@@ -1,5 +1,5 @@
 import SimpleSchema from 'simpl-schema';
-import { addTypeAndResolvers, getType } from 'meteor/vulcan:core';
+import { addTypeAndResolvers } from 'meteor/vulcan:core';
 import {fieldPermissions} from './permissions';
 
 const schema = {
@@ -12,7 +12,9 @@ const schema = {
     ...fieldPermissions,
   },
   type: {
-    ...getType('RestrictedType'),
+    type: Object,
+    typeName: 'RestrictedType',
+    blackbox: true,
     ...fieldPermissions,
   },
 };

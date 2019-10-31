@@ -1,4 +1,4 @@
-import { getType, Utils } from 'meteor/vulcan:core';
+import { Utils } from 'meteor/vulcan:core';
 import { fieldPermissions } from './permissions';
 import SimpleSchema from 'simpl-schema';
 
@@ -27,17 +27,23 @@ const schema = {
     ...fieldPermissions,
   },
   queryType: {
-    ...getType('Type'),
+    type: Object,
+    blackbox: true,
+    typeName: 'Type',
     ...fieldPermissions,
   },
 
   mutationType: {
-    ...getType('Type'),
+    type: Object,
+    blackbox: true,
+    typeName: 'Type',
     ...fieldPermissions,
   },
 
   subscriptionType: {
-    ...getType('Type'),
+    type: Object,
+    blackbox: true,
+    typeName: 'Type',
     ...fieldPermissions,
   },
   types: {
@@ -45,7 +51,9 @@ const schema = {
     ...fieldPermissions,
   },
   'types.$': {
-    ...getType('Type'),
+    type: Object,
+    blackbox: true,
+    typeName: 'Type',
   },
 };
 

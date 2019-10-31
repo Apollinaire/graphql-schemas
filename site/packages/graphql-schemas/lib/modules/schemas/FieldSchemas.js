@@ -1,8 +1,7 @@
 import SimpleSchema from 'simpl-schema';
-import { getType, addTypeAndResolvers } from 'meteor/vulcan:core';
+import { addTypeAndResolvers } from 'meteor/vulcan:core';
 import { fieldPermissions } from './permissions';
 
-import RestrictedType from './RestrictedTypeSchema';
 
 const schema = {
   name: {
@@ -18,10 +17,14 @@ const schema = {
     ...fieldPermissions,
   },
   'args.$': {
-    ...getType('Argument')
+    type: Object,
+    typeName: 'Argument',
+    blackbox: true,
   },
   type: {
-    ...getType('RestrictedType'), // avoid deep recursions
+    type: Object,
+    blackbox: true,
+    typeName: 'RestrictedType',
     ...fieldPermissions,
   },
 };
