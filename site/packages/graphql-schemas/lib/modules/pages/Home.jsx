@@ -1,15 +1,13 @@
 import React from 'react';
 import { registerComponent, Components } from 'meteor/vulcan:core';
 import { buildClientSchema, introspectionFromSchema } from 'graphql';
-import SchemaDisplay from './SchemaDisplay';
-import TextTypes from './TextTypes';
 import { withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
-import { getTypeGraph } from '../modules/utils/buildGraph';
-import { simplifySchema } from '../modules/utils/introspection';
-import { assignTypesAndIDs } from '../modules/utils/assignTyepsAndIds';
-import { getNodesAndEdges } from '../modules/utils/getNodesAndEdges';
-import DocExplorer from './DocExplorer';
+import { getTypeGraph } from '../utils/buildGraph';
+import { simplifySchema } from '../utils/introspection';
+import { assignTypesAndIDs } from '../utils/assignTyepsAndIds';
+import { getNodesAndEdges } from '../utils/getNodesAndEdges';
+import DocExplorer from '../../components/DocExplorer';
 
 class Home extends React.Component {
   state = {

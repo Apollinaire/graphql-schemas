@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { mapProps } from 'recompose';
-import { registerComponent, withSingle, getFragment } from 'meteor/vulcan:core';
-import DocExplorer from './DocExplorer';
-import { singleSchemaFragment } from '../modules/schemas/fragments';
+import { registerComponent, withSingle } from 'meteor/vulcan:core';
+import DocExplorer from '../../components/DocExplorer';
+import { singleSchemaFragment } from '../schemas/fragments';
 
 const singleOptions = {
   collectionName: 'Schemas',

@@ -1,3 +1,4 @@
-import '../components/SchemaList';
-import '../components/SchemasSingle';
-import '../components/Home';
+import './pages/Home';
+import './pages/SchemaList';
+import './pages/SchemasSingle';
+import './pages/ContributionsList'
