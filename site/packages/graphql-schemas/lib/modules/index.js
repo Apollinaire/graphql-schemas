@@ -1,4 +1,6 @@
 import './schemas/collection';
+import './contributions';
+
 // Components
 import './components';
 
