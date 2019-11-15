@@ -10,6 +10,7 @@ function isValidRequest(request, response) {
     response &&
     request.method === 'POST' &&
     request.url &&
+    !~request.url.indexOf('localhost:') &&
     response.status === 200 &&
     ((response.content || {}).mimeType || '').toLowerCase() === 'application/json' &&
     ((request.postData || {}).mimeType || '').toLowerCase() === 'application/json' &&
@@ -39,7 +40,15 @@ class GraphQLDetector {
 
       if (_.isObject(requestBody)) {
         req.getContent(responseBody => {
-          this.queryHandler(requestBody, JSON.parse(responseBody), request.url);
+          let paresedResponseBody;
+          try {
+            paresedResponseBody = JSON.parse(responseBody);
+          } catch (e) {
+            console.log('error parsing responseBody');
+            console.log(e);
+            return;
+          }
+          this.queryHandler(requestBody, paresedResponseBody, request.url);
         });
       }
     }
@@ -56,38 +65,74 @@ class GraphQLDetector {
       !_.isEmpty(responseBody.data)
     ) {
       const hash = hashCode(url + requestBody.query);
-      // set or update the local state for queries
-      if (this.queries[hash]) {
-        this.queries[hash] = {
-          requestBody,
-          responseBody: responseBody.data,
-          url,
-          hits: (this.queries[hash].hits || 1) + 1,
-        };
-      } else {
-        this.queries[hash] = {
-          requestBody,
-          responseBody: responseBody.data,
-          url,
-          hits: 1,
-        };
-      }
-      // update the app state
-      if (this.App && _.isFunction(this.App.setState)) {
-        this.App.setState({ [hash]: this.queries[hash] });
-      }
+
+      this.updateState(hash, {
+        requestBody,
+        responseBody: responseBody.data,
+        url,
+      });
+
       // contribute to the site
-      this.queryContributor(requestBody.query, responseBody.data, url);
+      this.queryContributor(hash, requestBody.query, responseBody.data, url);
     }
   };
 
-  queryContributor = (query, responseBody, url) => {
+  queryContributor = (hash, query, responseBody, url) => {
     // remove arguments' values in the querystring
     const cleanQuery = queryCleaner(query);
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
     // todo push the contribution
-    // axios.post(...)
+    axios
+      .post('http://localhost:8000/graphql', {
+        operationName: 'createContributionFromExtension',
+        query: `
+    mutation createContributionFromExtension($query: String, $url: String, $responseBody: JSON) {
+      createContribution(data: {query: $query, url: $url, responseBody: $responseBody}) {
+        data {
+          _id
+        }
+      }
+    }    
+    `,
+        variables: {
+          query: cleanQuery,
+          responseBody: cleanResponse,
+          url: url,
+        },
+      })
+      .then(res => {
+        console.log(res);
+        this.updateState(hash, { contributed: true });
+      })
+      .catch(e => {
+        console.log('error in contribution');
+        console.log(e.response);
+      });
+  };
+
+  updateState = (hash, newState) => {
+    if (!hash || !newState) {
+      return;
+    }
+    // set or update the local state for queries
+    if (this.queries[hash]) {
+      const oldQuery = this.queries[hash];
+      this.queries[hash] = {
+        ...oldQuery,
+        hits: (oldQuery.hits || 1) + 1,
+        ...newState,
+      };
+    } else {
+      this.queries[hash] = {
+        hits: 1,
+        ...newState,
+      };
+    }
+    // update the app state
+    if (this.App && _.isFunction(this.App.setState)) {
+      this.App.setState({ [hash]: this.queries[hash] });
+    }
   };
 
   linkApp = component => {
