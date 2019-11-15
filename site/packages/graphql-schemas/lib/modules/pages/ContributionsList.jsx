@@ -11,7 +11,7 @@ const datatableFields = [
 
 const ContributionsList = (props) => {
   return (
-      <Components.Datatable collection={Contributions} fields={datatableFields} />      
+      <Components.Datatable collection={Contributions} columns={datatableFields} />      
   )
 }
 

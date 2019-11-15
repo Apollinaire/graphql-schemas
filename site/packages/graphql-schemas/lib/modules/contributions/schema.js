@@ -5,12 +5,12 @@ const schema = {
     type: String,
     label: 'ID',
     optional: true,
-    canRead: ['admin'],
+    canRead: ['admins'],
   },
   createdAt: {
     type: Date,
     optional: true,
-    canRead: ['admin'],
+    canRead: ['admins'],
     onCreate: () => {
       return new Date();
     },
@@ -18,8 +18,8 @@ const schema = {
   userId: {
     type: String,
     optional: true,
-    canRead: ['admin'],
-    canUpdate: ['admin'],
+    canRead: ['admins'],
+    canUpdate: ['admins'],
     resolveAs: {
       fieldName: 'user',
       type: 'User',
@@ -45,27 +45,27 @@ const schema = {
     type: String,
     label: 'query',
     optional: false,
-    canRead: ['admin'],
+    canRead: ['admins'],
     canCreate: ['guests'],
-    canUpdate: ['admin'],
+    canUpdate: ['admins'],
   },
   responseBody: {
     type: Object,
     blackbox: true,
     label: 'ResponseBody',
     optional: false,
-    canRead: ['admin'],
+    canRead: ['admins'],
     canCreate: ['guests'],
-    canUpdate: ['admin'],
+    canUpdate: ['admins'],
   },
   url: {
     type: String,
-    regEx: SimpleSchema.RegEx.Url,
+    // regEx: SimpleSchema.RegEx.Url, // TODO : restaure this
     label: 'Url',
     optional: false,
-    canRead: ['admin'],
+    canRead: ['admins'],
     canCreate: ['guests'],
-    canUpdate: ['admin'],
+    canUpdate: ['admins'],
   },
 }
 
