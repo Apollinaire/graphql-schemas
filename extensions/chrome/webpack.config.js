@@ -25,6 +25,7 @@ var options = {
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js"),
     devtools: path.join(__dirname, "src", "js", "devtools.js"),
+    panel: path.join(__dirname, "src", "js", "panel.js"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -98,6 +99,11 @@ var options = {
       template: path.join(__dirname, "src", "devtools.html"),
       filename: "devtools.html",
       chunks: ["devtools"]
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "panel.html"),
+      filename: "panel.html",
+      chunks: ["panel"]
     }),
     new WriteFilePlugin()
   ]
