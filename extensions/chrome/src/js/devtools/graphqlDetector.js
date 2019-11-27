@@ -84,7 +84,7 @@ class GraphQLDetector {
     const cleanResponse = jsonCleaner(responseBody);
     // todo push the contribution
     axios
-      .post('http://localhost:8000/graphql', {
+      .post('http://localhost:5555/graphql', {
         operationName: 'createContributionFromExtension',
         query: `
     mutation createContributionFromExtension($query: String, $url: String, $responseBody: JSON) {
