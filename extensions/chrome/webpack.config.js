@@ -57,12 +57,17 @@ var options = {
         test: /\.mjs$/,
         include: /node_modules/,
         type: "javascript/auto",
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       }
     ]
   },
   resolve: {
     alias: alias,
-    extensions: fileExtensions.map(extension => ("." + extension)).concat([".jsx", ".js", ".mjs", ".css"])
+    extensions: fileExtensions.map(extension => ("." + extension)).concat([".jsx", ".js", ".mjs", ".css", ".ts", ".tsx"])
   },
   plugins: [
     // clean the build folder

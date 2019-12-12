@@ -1,4 +1,4 @@
-function hashCode(str) {
+function hashCode(str: string) {
   var hash = 0,
     i,
     chr;

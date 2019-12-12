@@ -1,6 +1,6 @@
 import _ from 'underscore';
 
-const jsonCleaner = (obj, parentKey) => {
+const jsonCleaner = (obj: any, parentKey: string): any => {
   // don't remove the typename
   if (parentKey === '__typename' && _.isString(obj)) {
     return obj;

@@ -82,7 +82,6 @@ class GraphQLDetector {
     const cleanQuery = queryCleaner(query);
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
-    // todo push the contribution
     axios
       .post('http://localhost:5555/graphql', {
         operationName: 'createContributionFromExtension',
