@@ -46,9 +46,13 @@ const replaceValue = (argument: ValueNode): ValueNode => {
         kind: 'StringValue',
         value: 'BooleanValue',
       };
-    case 'NullValue':
-      return argument;
     case 'EnumValue':
+      return {
+        ...argument,
+        kind: 'StringValue',
+        value: 'EnumValue'
+      };
+    case 'NullValue':
       return argument;
     case 'ListValue':
       return {
@@ -63,7 +67,6 @@ const replaceValue = (argument: ValueNode): ValueNode => {
       };
     case 'Variable':
       return argument;
-
     default:
       return argument;
   }
