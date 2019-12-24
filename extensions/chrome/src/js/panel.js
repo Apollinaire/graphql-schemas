@@ -12,22 +12,22 @@ class App extends React.Component {
     // send a message to get the state
     this.port = chrome.runtime.connect({ name: 'graphql-detector' });
     this.port.onMessage.addListener(msg => {
-      if (msg?.type === 'fullCache') {
-        console.log(msg)
-        if(!_.isEmpty(msg.data)) {
-          this.setState(msg.data);
+      if (msg?.tabId === chrome.devtools.inspectedWindow.tabId) {
+        if (msg?.type === 'fullCache') {
+          if (!_.isEmpty(msg.data)) {
+            this.setState(msg.data);
+          }
+        }
+        if (msg?.type === 'queryUpdate') {
+          const { hash, query } = msg.data;
+          this.setState({ [hash]: query });
         }
       }
-      if (msg?.type === 'queryUpdate') {
-        console.log(msg)
-        const { hash, query } = msg.data;
-        this.setState({ [hash]: query });
-      }
     });
-    this.port.postMessage({ type: 'getFullCache' });
+    this.port.postMessage({ type: 'getFullCache', tabId: chrome.devtools.inspectedWindow.tabId });
   }
   componentWillUnmount() {
-    this.port.disconnect();
+    // this.port.disconnect();
   }
 
   render() {

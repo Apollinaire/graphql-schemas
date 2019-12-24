@@ -23,7 +23,7 @@ class GraphQLDetector {
     this.queries = {};
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
-  eventHandler = req => {
+  eventHandler = (req) => {
     if (typeof req !== 'object') return;
     const { request, response } = req;
     if (isValidRequest(request, response)) {
@@ -39,13 +39,18 @@ class GraphQLDetector {
       }
 
       if (_.isObject(requestBody)) {
-        req.getContent(responseBody => {
+        req.getContent((responseBody) => {
+          if(!responseBody) {
+            return;
+          }
+          console.log(requestBody,responseBody, request.url, '\n')
           let paresedResponseBody;
           try {
             paresedResponseBody = JSON.parse(responseBody);
           } catch (e) {
             console.log('error parsing responseBody');
-            console.log(e);
+            // console.log(responseBody)
+            // console.log(e);
             return;
           }
           this.queryHandler(requestBody, paresedResponseBody, request.url);
@@ -100,11 +105,10 @@ class GraphQLDetector {
           url: url,
         },
       })
-      .then(res => {
-        console.log(res);
+      .then((res) => {
         this.updateState(hash, { contributed: true });
       })
-      .catch(e => {
+      .catch((e) => {
         console.log('error in contribution');
         console.log(e);
       });
@@ -133,14 +137,18 @@ class GraphQLDetector {
       this.App.setState({ [hash]: this.queries[hash] });
     }
     if (this.port) {
-      this.port.postMessage({type: 'queryUpdate', data: {
-        hash,
-        query: this.queries[hash]
-      }})
+      this.port.postMessage({
+        type: 'queryUpdate',
+        data: {
+          hash,
+          query: this.queries[hash],
+        },
+        tabId: chrome.devtools.inspectedWindow.tabId,
+      });
     }
   };
 
-  linkApp = component => {
+  linkApp = (component) => {
     this.App = component;
     if (!_.isEmpty(this.queries)) {
       this.App.state = {
@@ -153,16 +161,21 @@ class GraphQLDetector {
   linkPort = (port) => {
     this.port = port;
     port.onMessage.addListener((msg) => {
-      if(msg?.type === 'getFullCache') {
-        console.log('sending fullcache')
-        port.postMessage({type: 'fullCache', data: this.getFullCache()})
+      if (msg?.tabId === chrome.devtools.inspectedWindow.tabId) {
+        if (msg?.type === 'getFullCache') {
+          port.postMessage({
+            type: 'fullCache',
+            data: this.getFullCache(),
+            tabId: chrome.devtools.inspectedWindow.tabId,
+          });
+        }
       }
-    })
-  }
+    });
+  };
 
   getFullCache = () => {
     return this.queries;
-  }
+  };
 }
 
 export default GraphQLDetector;
