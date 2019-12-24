@@ -12,15 +12,16 @@ function isValidRequest(request, response) {
     request.url &&
     !~request.url.indexOf('localhost:') &&
     response.status === 200 &&
-    ((response.content || {}).mimeType || '').toLowerCase() === 'application/json' &&
-    ((request.postData || {}).mimeType || '').toLowerCase() === 'application/json' &&
-    (request.postData || {}).text
+    ~(response.content?.mimeType || '').toLowerCase().indexOf('application/json') &&
+    ~(request.postData?.mimeType || '').toLowerCase().indexOf('application/json') &&
+    request.postData?.text
   );
 }
 
 class GraphQLDetector {
-  constructor() {
+  constructor(shoudlContribute = false) {
     this.queries = {};
+    this.shoudlContribute = shoudlContribute;
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
   eventHandler = (req) => {
@@ -40,20 +41,19 @@ class GraphQLDetector {
 
       if (_.isObject(requestBody)) {
         req.getContent((responseBody) => {
-          if(!responseBody) {
+          if (!responseBody) {
             return;
           }
-          console.log(requestBody,responseBody, request.url, '\n')
-          let paresedResponseBody;
+          let parsedResponseBody;
           try {
-            paresedResponseBody = JSON.parse(responseBody);
+            parsedResponseBody = JSON.parse(responseBody);
           } catch (e) {
             console.log('error parsing responseBody');
-            // console.log(responseBody)
+            console.log(responseBody);
             // console.log(e);
             return;
           }
-          this.queryHandler(requestBody, paresedResponseBody, request.url);
+          this.queryHandler(requestBody, parsedResponseBody, request.url);
         });
       }
     }
@@ -83,6 +83,9 @@ class GraphQLDetector {
   };
 
   queryContributor = (hash, query, responseBody, url) => {
+    if (!this.shoudlContribute) {
+      return;
+    }
     // remove arguments' values in the querystring
     const cleanQuery = queryCleaner(query);
     // replace leaf values in the responseBody by their type
@@ -136,16 +139,6 @@ class GraphQLDetector {
     if (this.App && _.isFunction(this.App.setState)) {
       this.App.setState({ [hash]: this.queries[hash] });
     }
-    if (this.port) {
-      this.port.postMessage({
-        type: 'queryUpdate',
-        data: {
-          hash,
-          query: this.queries[hash],
-        },
-        tabId: chrome.devtools.inspectedWindow.tabId,
-      });
-    }
   };
 
   linkApp = (component) => {
@@ -156,25 +149,6 @@ class GraphQLDetector {
         ...this.queries,
       };
     }
-  };
-
-  linkPort = (port) => {
-    this.port = port;
-    port.onMessage.addListener((msg) => {
-      if (msg?.tabId === chrome.devtools.inspectedWindow.tabId) {
-        if (msg?.type === 'getFullCache') {
-          port.postMessage({
-            type: 'fullCache',
-            data: this.getFullCache(),
-            tabId: chrome.devtools.inspectedWindow.tabId,
-          });
-        }
-      }
-    });
-  };
-
-  getFullCache = () => {
-    return this.queries;
   };
 }
 
