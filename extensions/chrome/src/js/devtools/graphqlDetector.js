@@ -106,7 +106,7 @@ class GraphQLDetector {
       })
       .catch(e => {
         console.log('error in contribution');
-        console.log(e.response);
+        console.log(e);
       });
   };
 
@@ -132,6 +132,12 @@ class GraphQLDetector {
     if (this.App && _.isFunction(this.App.setState)) {
       this.App.setState({ [hash]: this.queries[hash] });
     }
+    if (this.port) {
+      this.port.postMessage({type: 'queryUpdate', data: {
+        hash,
+        query: this.queries[hash]
+      }})
+    }
   };
 
   linkApp = component => {
@@ -143,6 +149,20 @@ class GraphQLDetector {
       };
     }
   };
+
+  linkPort = (port) => {
+    this.port = port;
+    port.onMessage.addListener((msg) => {
+      if(msg?.type === 'getFullCache') {
+        console.log('sending fullcache')
+        port.postMessage({type: 'fullCache', data: this.getFullCache()})
+      }
+    })
+  }
+
+  getFullCache = () => {
+    return this.queries;
+  }
 }
 
 export default GraphQLDetector;

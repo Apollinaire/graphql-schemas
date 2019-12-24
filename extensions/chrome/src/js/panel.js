@@ -1,25 +1,33 @@
+import _ from 'underscore';
 import React from 'react';
 import { render } from 'react-dom';
-
-import GraphQLDetector from './devtools/graphqlDetector';
-
-const g = new GraphQLDetector();
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('message received: ', message)
-  sendResponse({from : 'panel'})
-})
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {};
-    g.linkApp(this);
-
+    // g.linkApp(this);
   }
   componentDidMount() {
     // send a message to get the state
-    
+    this.port = chrome.runtime.connect({ name: 'graphql-detector' });
+    this.port.onMessage.addListener(msg => {
+      if (msg?.type === 'fullCache') {
+        console.log(msg)
+        if(!_.isEmpty(msg.data)) {
+          this.setState(msg.data);
+        }
+      }
+      if (msg?.type === 'queryUpdate') {
+        console.log(msg)
+        const { hash, query } = msg.data;
+        this.setState({ [hash]: query });
+      }
+    });
+    this.port.postMessage({ type: 'getFullCache' });
+  }
+  componentWillUnmount() {
+    this.port.disconnect();
   }
 
   render() {
