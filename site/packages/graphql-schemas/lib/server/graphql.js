@@ -1,9 +1,11 @@
-import { addGraphQLResolvers, addGraphQLQuery } from 'meteor/vulcan:core';
-import { getIntrospectionQuery } from 'graphql';
+import _ from 'underscore';
+import { addGraphQLResolvers, addGraphQLMutation } from 'meteor/vulcan:core';
+import { getIntrospectionQuery, parse } from 'graphql';
 import SimpleSchema from 'simpl-schema';
 import { UserInputError, ApolloError } from 'apollo-server';
 
 import axios from 'axios';
+import contributionToTypes from './contributionToTypes';
 
 const introspectionQuery = getIntrospectionQuery({descriptions: true})
 
@@ -36,5 +38,20 @@ const getSchemaResolver = {
   },
 };
 // https://graphql-pokemon.now.sh
-addGraphQLResolvers(getSchemaResolver);
-addGraphQLQuery(`getSchema(endpoint: String!): Schema`);
+// addGraphQLResolvers(getSchemaResolver);
+// addGraphQLQuery(`getSchema(endpoint: String!): Schema`);
+
+
+const evaluateContribution = {
+  Mutation: {
+    evaluateContribution: async (root, {id: _id}, { Contributions }) => {
+      const contribution = await Contributions.findOne({_id});
+      const { query: strQuery, responseBody, url } = contribution;
+      contributionToTypes(strQuery, responseBody);
+      return true
+    }
+  }
+}
+
+addGraphQLResolvers(evaluateContribution);
+addGraphQLMutation(`evaluateContribution(id: String!): Boolean`);

@@ -21,6 +21,14 @@ const schema = {
     typeName: 'Argument',
     blackbox: true,
   },
+  isListType: {
+    type: Boolean,
+    ...fieldPermissions,
+  },
+  isNullableType: {
+    type: Boolean,
+    ...fieldPermissions,
+  },
   type: {
     type: Object,
     blackbox: true,

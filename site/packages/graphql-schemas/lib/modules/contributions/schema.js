@@ -25,7 +25,7 @@ const schema = {
       type: 'User',
       resolver: (parent, args, context) => {
         if (!parent || !parent.userId) {
-          return null
+          return null;
         }
         const user = context.Users.loader.load(parent.userId);
         const viewableFields = context.Users.getViewableFields(context.currentUser, context.Users);
@@ -40,6 +40,15 @@ const schema = {
       },
       addOriginalField: true,
     },
+  },
+  status: {
+    type: String,
+    label: 'Status',
+    optional: true,
+    canRead: ['admins'],
+    canUpdate: ['admins'],
+    onCreate: () => 'pending',
+    allowedValues: ['pending', 'accepted', 'rejected'],
   },
   query: {
     type: String,
@@ -60,6 +69,7 @@ const schema = {
   },
   url: {
     type: String,
+    searchable: true,
     // regEx: SimpleSchema.RegEx.Url, // TODO : restaure this
     label: 'Url',
     optional: false,
@@ -67,6 +77,6 @@ const schema = {
     canCreate: ['guests'],
     canUpdate: ['admins'],
   },
-}
+};
 
 export default schema;
