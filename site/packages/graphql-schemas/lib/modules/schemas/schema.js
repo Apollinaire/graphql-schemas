@@ -32,7 +32,6 @@ const schema = {
     typeName: 'Type',
     ...fieldPermissions,
   },
-
   mutationType: {
     type: Object,
     blackbox: true,

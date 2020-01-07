@@ -1,8 +1,27 @@
-import merge from 'lodash/merge';
 import _ from 'underscore';
-import { parse } from 'graphql';
+import searchQueryTypes from './searchQueryTypes';
+import searchResponseBodyTypes from './searchResponseBodyTypes';
 
-const mergeTypes = (types, newType) => {
+export const arrayToObjectType = type => {
+  return {
+    ...type,
+    fields: _.object(_.map(type.fields, field => [field.name, field])),
+  };
+};
+
+export const arrayToObjectTypes = arrayTypes => {
+  return _.object(_.map(arrayTypes, (type, index) => [type.name, arrayToObjectType(type)]));
+};
+
+export const objectToArrayType = type => {
+  return { ...type, fields: _.values(type.fields) };
+};
+
+export const objectToArrayTypes = objectTypes => {
+  return _.values(_.mapObject(objectTypes, type => objectToArrayType(type)));
+};
+
+export const mergeNewType = (types, newType) => {
   if (!types[newType.name]) {
     return {
       ...types,
@@ -23,45 +42,23 @@ const mergeTypes = (types, newType) => {
   }
 };
 
-const fieldFromValue = (value, name) => {
-  if (value === 'null') return { name, isNullableType: true };
-  if (value === 'string') return { name, type: { name: 'String', kind: 'Scalar' } };
-  if (value === 'boolean') return { name, type: { name: 'Boolean', kind: 'Scalar' } };
-  if (value === 'number') return { name, type: { name: 'Float', kind: 'Scalar' } };
-  if (_.isArray(value)) {
-    return { name, isListType: true, type: merge(..._.map(value, val => fieldFromValue(val, name))) };
-  }
-  if (_.isObject(value)) {
-    return {
-      name,
-      type: { name: value.__typename || `${name}__UnknownType`, kind: 'Type' },
-    };
-  }
-};
-
-const searchResponseBody = responseBody => {
-  let types = {};
-  if (responseBody && typeof responseBody === 'object') {
-    if (responseBody.__typename) {
-      const newType = {
-        name: responseBody.__typename,
-        fields: _.mapObject(responseBody, (value, key) => {
-          if (key === '__typename') {
-            return;
-          }
-          return fieldFromValue(value, key);
-        }),
-      };
-      types = mergeTypes(types, newType);
-    }
-  }
-  return types;
+export const mergeTypes = (types1, types2) => {
+  let result = {};
+  _.each(types1, type => {
+    result = mergeNewType(result, type);
+  });
+  _.each(types2, type => {
+    result = mergeNewType(result, type);
+  });
+  return result;
 };
 
 const contributionToTypes = (queryStr, responseBody) => {
-  const query = parse(queryStr);
-  const types = searchResponseBody(responseBody);
-  console.log(types);
+  const queryTypes = searchQueryTypes(queryStr);
+  const responseBodytypes = searchResponseBodyTypes(responseBody);
+
+  const types = mergeTypes(queryTypes, responseBodytypes);
+  return types;
 };
 
 export default contributionToTypes;
