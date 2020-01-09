@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import slugify from 'slugify';
 import { addGraphQLResolvers, addGraphQLMutation } from 'meteor/vulcan:core';
 import { getIntrospectionQuery, parse } from 'graphql';
 import SimpleSchema from 'simpl-schema';
@@ -47,11 +48,13 @@ const evaluateContribution = {
       const contribution = await Contributions.findOne({ _id });
       const { query, responseBody, url } = contribution;
       const types = contributionToTypes(query, responseBody);
-      console.log(JSON.stringify(objectToArrayTypes(types), null, 2))
+      // console.log(JSON.stringify(objectToArrayTypes(types), null, 2))
       const schema = await Schemas.findOne({ endpoint: url });
+      console.log('schema', schema)
       if (!schema) {
         // create new one
         const newSchema = {
+          slug: slugify(url),
           endpoint: url,
           types: objectToArrayTypes(types),
         };

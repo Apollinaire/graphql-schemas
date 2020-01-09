@@ -2,19 +2,18 @@ import merge from 'lodash/merge';
 import _ from 'underscore';
 import { mergeTypes, mergeNewType } from './contributionToTypes';
 
-
 const fieldFromValue = (value, name) => {
   if (value === 'null') return { name, isNullableType: true };
-  if (value === 'string') return { name, type: { name: 'String', kind: 'Scalar' } };
-  if (value === 'boolean') return { name, type: { name: 'Boolean', kind: 'Scalar' } };
-  if (value === 'number') return { name, type: { name: 'Float', kind: 'Scalar' } };
+  if (value === 'string') return { name, type: { name: 'String', kind: 'SCALAR' } };
+  if (value === 'boolean') return { name, type: { name: 'Boolean', kind: 'SCALAR' } };
+  if (value === 'number') return { name, type: { name: 'Float', kind: 'SCALAR' } };
   if (_.isArray(value)) {
     return { name, isListType: true, type: merge(..._.map(value, val => fieldFromValue(val, name))) };
   }
   if (_.isObject(value)) {
     return {
       name,
-      type: { name: value.__typename || `${name}__UnknownType`, kind: 'Type' },
+      type: { name: value.__typename || `${name}__UnknownType`, kind: 'OBJECT' },
     };
   }
 };
@@ -25,12 +24,15 @@ const getRecursiveTypes = result => {
     if (result.__typename) {
       const newType = {
         name: result.__typename,
-        fields: _.mapObject(result, (value, key) => {
-          if (key === '__typename') {
-            return;
-          }
-          return fieldFromValue(value, key);
-        }),
+        kind: 'OBJECT',
+        fields: _.compact(
+          _.mapObject(result, (value, key) => {
+            if (key === '__typename') {
+              return;
+            }
+            return fieldFromValue(value, key);
+          })
+        ),
       };
       types = mergeNewType(types, newType);
     }
