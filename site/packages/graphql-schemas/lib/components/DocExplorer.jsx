@@ -5,6 +5,7 @@ import _find from 'lodash/find';
 import _last from 'lodash/last';
 import _keys from 'lodash/keys';
 import _isEmpty from 'lodash/isEmpty';
+import _compact from 'lodash/compact';
 
 const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
   const [wrap, setWrap] = useState(true);
@@ -41,7 +42,8 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
     </span>
   );
 };
-const DocField = ({ name, type: typeName = '', args = [], updateSelectedAt, index, getTypeByName }) => {
+const DocField = ({ name, type: originalType, args = [], updateSelectedAt, index, getTypeByName }) => {
+  const typeName = (originalType || {}).name || '';
   const type = getTypeByName(typeName);
   return (
     <div>
@@ -55,7 +57,7 @@ const DocField = ({ name, type: typeName = '', args = [], updateSelectedAt, inde
           href=''
           onClick={e => {
             e.preventDefault();
-            updateSelectedAt(index, type);
+            updateSelectedAt(index, type.name);
           }}
         >
           {type.name}
@@ -76,8 +78,8 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
   const leaves = _filter(
     type.fields || [],
     field =>
-      ((field || {}).type || {}).kind ||
-      ('' !== 'OBJECT' && (((field || {}).type || {}).name || '').slice(0, 2) !== '__')
+      (((field || {}).type || {}).kind || '') !== 'OBJECT' &&
+      (((field || {}).type || {}).name || '').slice(0, 2) !== '__'
   );
   const inputFields = _filter(
     type.inputFields || [],
@@ -95,7 +97,7 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
       {type.description && <p>{type.description}</p>}
       {_map(fields, field => (
         <DocField
-          key={field.name}
+          key={field.name + 'field'}
           updateSelectedAt={updateSelectedAt}
           index={index}
           {...field}
@@ -104,7 +106,7 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
       ))}
       {_map(leaves, field => (
         <DocField
-          key={field.name}
+          key={field.name + 'leaf'}
           {...field}
           index={index}
           updateSelectedAt={updateSelectedAt}
@@ -113,7 +115,7 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
       ))}
       {_map(inputFields, field => (
         <DocField
-          key={field.name}
+          key={field.name + 'inputfield'}
           {...field}
           index={index}
           updateSelectedAt={updateSelectedAt}
@@ -122,7 +124,7 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
       ))}
       {_map(inputLeaves, field => (
         <DocField
-          key={field.name}
+          key={field.name + 'inputLeaf'}
           {...field}
           index={index}
           updateSelectedAt={updateSelectedAt}
@@ -135,6 +137,7 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
 
 const DocExplorer = ({ types = [], queryType = {}, mutationType = {} }) => {
   const [selected, setSelected] = useState([]);
+  console.log(types);
   const objectTypes = _filter(types, type => type.kind === 'OBJECT' && type.name.slice(0, 2) !== '__');
   const updateSelectedAt = (index, value) => {
     const remainingItems = selected.slice(0, index + 1);
@@ -163,7 +166,10 @@ const DocExplorer = ({ types = [], queryType = {}, mutationType = {} }) => {
           ))}
         </div>
         {_map(selected, (typeName, index) => {
-          const type = _find(types, { name: typeName });
+          console.log(typeName)
+          const type = _find(_compact(types), { name: typeName });
+          console.log(type)
+          if(!type) return null;
           return (
             <DocItem
               type={type}

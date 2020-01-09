@@ -23,19 +23,20 @@ export const fullTypeFragment = gql`
     }
   }
 `;
-// export const singleSchemaFragment = gql`
-//   fragment singleSchema on Schema {
-//     _id
-//     slug
-//     endpoint
-//     queryType {
-//       ...fullTypeFragment
-//     }
-//     mutationType {
-//       ...fullTypeFragment
-//     }
-//     types {
-//       ...fullTypeFragment
-//     }
-//   }
-// `;
+export const singleSchemaFragment = gql`
+  fragment singleSchema on Schema {
+    _id
+    slug
+    endpoint
+    queryType {
+      ...fullTypeFragment
+    }
+    mutationType {
+      ...fullTypeFragment
+    }
+    types {
+      ...fullTypeFragment
+    }
+  }
+  ${fullTypeFragment}
+`;
