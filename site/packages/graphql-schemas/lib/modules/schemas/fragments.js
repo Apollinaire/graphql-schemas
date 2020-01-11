@@ -7,6 +7,7 @@ export const fullTypeFragment = gql`
     description
     fields {
       name
+      isListType
       type {
         name
         kind

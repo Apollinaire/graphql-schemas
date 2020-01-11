@@ -42,7 +42,7 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
     </span>
   );
 };
-const DocField = ({ name, type: originalType, args = [], updateSelectedAt, index, getTypeByName }) => {
+const DocField = ({ name, type: originalType, args = [], updateSelectedAt, index, getTypeByName, isListType }) => {
   const typeName = (originalType || {}).name || '';
   const type = getTypeByName(typeName);
   return (
@@ -53,15 +53,19 @@ const DocField = ({ name, type: originalType, args = [], updateSelectedAt, index
       ) : null}
       {': '}
       {type.kind === 'OBJECT' ? (
-        <a
-          href=''
-          onClick={e => {
-            e.preventDefault();
-            updateSelectedAt(index, type.name);
-          }}
-        >
-          {type.name}
-        </a>
+        <>
+          {isListType && '['}
+          <a
+            href=''
+            onClick={e => {
+              e.preventDefault();
+              updateSelectedAt(index, type.name);
+            }}
+          >
+            {type.name}
+          </a>
+          {isListType && ']'}
+        </>
       ) : (
         <span>{type.name}</span>
       )}
@@ -166,10 +170,10 @@ const DocExplorer = ({ types = [], queryType = {}, mutationType = {} }) => {
           ))}
         </div>
         {_map(selected, (typeName, index) => {
-          console.log(typeName)
+          console.log(typeName);
           const type = _find(_compact(types), { name: typeName });
-          console.log(type)
-          if(!type) return null;
+          console.log(type);
+          if (!type) return null;
           return (
             <DocItem
               type={type}
