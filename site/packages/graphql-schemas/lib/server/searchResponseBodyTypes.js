@@ -8,7 +8,7 @@ const fieldFromValue = (value, name) => {
   if (value === 'boolean') return { name, type: { name: 'Boolean', kind: 'SCALAR' } };
   if (value === 'number') return { name, type: { name: 'Float', kind: 'SCALAR' } };
   if (_.isArray(value)) {
-    return { name, isListType: true, type: merge(..._.map(value, val => fieldFromValue(val, name))) };
+    return { name, isListType: true, type: merge(..._.map(value, val => (fieldFromValue(val, name) || {}).type)) };
   }
   if (_.isObject(value)) {
     return {
