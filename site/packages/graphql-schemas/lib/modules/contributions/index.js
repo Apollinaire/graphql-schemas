@@ -13,4 +13,6 @@ const Contributions = createCollection({
   mutations: getDefaultMutations({ typeName: 'Contribution' }),
 });
 
+Contributions.checkAccess = (currentUser) => currentUser && currentUser.isAdmin
+
 export default Contributions;
