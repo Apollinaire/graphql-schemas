@@ -21,6 +21,29 @@ export const objectToArrayTypes = objectTypes => {
   return _.values(_.mapObject(objectTypes, type => objectToArrayType(type)));
 };
 
+export const isObjectType = type => {
+  if (!_.isObject(type)) {
+    return false;
+  }
+  if (!_.isString(type.name) || _.isEmpty(type.name)) {
+    return false;
+  }
+  if (!_.isObject(type.fields) || _.isArray(type.fields)) {
+    return false;
+  }
+  let allFieldsOk = true;
+  _.each(type.fields, (value, key) => {
+    if (!_.isObject(value) || value.name !== key) {
+      allFieldsOk = false;
+    }
+  });
+  return allFieldsOk;
+};
+
+const isArrayType = type => {
+  
+}
+
 export const mergeNewType = (types, newType) => {
   if (!types[newType.name]) {
     return {
