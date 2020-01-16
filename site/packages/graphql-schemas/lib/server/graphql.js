@@ -48,9 +48,7 @@ const evaluateContribution = {
       const contribution = await Contributions.findOne({ _id });
       const { query, responseBody, url } = contribution;
       const types = contributionToTypes(query, responseBody);
-      // console.log(JSON.stringify(objectToArrayTypes(types), null, 2))
       const schema = await Schemas.findOne({ endpoint: url });
-      console.log('schema', schema)
       if (!schema) {
         // create new one
         const newSchema = {
@@ -58,13 +56,10 @@ const evaluateContribution = {
           endpoint: url,
           types: objectToArrayTypes(types),
         };
-        console.log('create new schema')
         await Schemas.insert(newSchema);
       } else {
-        console.log('update existing schema');
         // merge types
         const newTypes = objectToArrayTypes(mergeTypes(arrayToObjectTypes(schema.types), types));
-        console.log(newTypes)
         await Schemas.update({ _id: schema._id }, { $set: { types: newTypes } });
       }
       return true;

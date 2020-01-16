@@ -11,7 +11,6 @@ const singleOptions = {
 };
 
 const SchemasSingle = props => {
-  // console.log(props);
   const { document } = props;
   return document ? (
     <DocExplorer types={document.types} queryType={document.queryType} mutationType={document.mutationType} />

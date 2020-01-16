@@ -32,17 +32,12 @@ class Home extends React.Component {
         query: this.query,
         variables: { endpoint },
       });
-      console.log(data.getSchema);
       const schema = buildClientSchema(data.getSchema);
       const introspection = introspectionFromSchema(schema);
-      // console.log(introspection);
       const { nodes, edges } = getNodesAndEdges(introspection);
-      // console.log(nodes, edges)
       const simpleSchema = simplifySchema(introspection.__schema);
       assignTypesAndIDs(simpleSchema);
-      console.log(simpleSchema);
       const typeGraph = getTypeGraph(simpleSchema);
-      // console.log(typeGraph)
       this.setState({
         simpleSchema,
         schema,
@@ -58,20 +53,6 @@ class Home extends React.Component {
   render() {
     const { nodes, edges } = this.state;
 
-    // const nodes={
-    //   'A': {},
-    //   'B': {},
-    //   'C': {},
-    //   'D': {},
-    //   'E': {},
-    // };
-    // const edges = [
-    //   ['A','B', {}],
-    //   ['B','C', {}],
-    //   ['B','D', {}],
-    //   ['C','E', {}],
-    //   ['D','E', {}],
-    // ]
     return (
       <div>
         <Components.AccountsLoginForm />

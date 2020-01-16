@@ -27,7 +27,6 @@ const Type = {
   },
 };
 
-// console.log(Type);
 
 export default new SimpleSchema(Type);
 

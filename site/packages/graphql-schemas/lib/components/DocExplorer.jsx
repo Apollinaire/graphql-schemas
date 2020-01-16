@@ -141,7 +141,6 @@ const DocItem = ({ index, type = {}, updateSelectedAt, getTypeByName }) => {
 
 const DocExplorer = ({ types = [], queryType = {}, mutationType = {} }) => {
   const [selected, setSelected] = useState([]);
-  console.log(types);
   const objectTypes = _filter(types, type => type.kind === 'OBJECT' && type.name.slice(0, 2) !== '__');
   const updateSelectedAt = (index, value) => {
     const remainingItems = selected.slice(0, index + 1);
@@ -170,9 +169,7 @@ const DocExplorer = ({ types = [], queryType = {}, mutationType = {} }) => {
           ))}
         </div>
         {_map(selected, (typeName, index) => {
-          console.log(typeName);
           const type = _find(_compact(types), { name: typeName });
-          console.log(type);
           if (!type) return null;
           return (
             <DocItem

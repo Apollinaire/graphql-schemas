@@ -18,7 +18,6 @@ const InlineMutator = ({ document }) => {
         <Components.Button
           onClick={() => {
             evaluateContribution({ variables: { id: document._id } }).then(res => {
-              console.log(res);
             });
           }}
         >
@@ -27,15 +26,6 @@ const InlineMutator = ({ document }) => {
       )}
     </Mutation>
   );
-  // return (
-  //   <Components.Button
-  //     onClick={() => {
-  //       evalutateContribution({ variables: { id: document._id } }).then(res => {
-  //         console.log(res);
-  //       });
-  //     }}
-  //   >Eval</Components.Button>
-  // );
 };
 
 const datatableFields = [
