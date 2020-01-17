@@ -25,14 +25,14 @@ const getRecursiveTypes = result => {
       const newType = {
         name: result.__typename,
         kind: 'OBJECT',
-        fields: _.compact(
+        fields: _.object(_.map(_.compact(
           _.mapObject(result, (value, key) => {
             if (key === '__typename') {
               return;
             }
             return fieldFromValue(value, key);
           })
-        ),
+        ), (field) => [field.name, field])),
       };
       types = mergeNewType(types, newType);
     }
