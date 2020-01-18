@@ -4,8 +4,10 @@ import { addGraphQLResolvers, addGraphQLMutation } from 'meteor/vulcan:core';
 import { getIntrospectionQuery, parse } from 'graphql';
 import SimpleSchema from 'simpl-schema';
 import { UserInputError, ApolloError } from 'apollo-server';
-
 import axios from 'axios';
+
+import './additionalTypes';
+
 import contributionToTypes, { objectToArrayTypes, arrayToObjectTypes, mergeTypes } from './contributionToTypes';
 
 const introspectionQuery = getIntrospectionQuery({ descriptions: true });
