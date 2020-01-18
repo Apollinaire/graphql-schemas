@@ -9,6 +9,7 @@ import axios from 'axios';
 import './additionalTypes';
 
 import contributionToTypes, { objectToArrayTypes, arrayToObjectTypes, mergeTypes } from './contributionToTypes';
+import treatOneContribution from './treatOneContribution';
 
 const introspectionQuery = getIntrospectionQuery({ descriptions: true });
 
@@ -44,9 +45,10 @@ const getSchemaResolver = {
 // addGraphQLResolvers(getSchemaResolver);
 // addGraphQLQuery(`getSchema(endpoint: String!): Schema`);
 
-const evaluateContribution = {
+const newResolvers = {
   Mutation: {
     evaluateContribution: async (root, { id: _id }, { Contributions, Schemas }) => {
+      return treatOneContribution(_id, { Contributions, Schemas });
       const contribution = await Contributions.findOne({ _id });
       const { query, responseBody, url } = contribution;
       const types = contributionToTypes(query, responseBody);
@@ -66,8 +68,19 @@ const evaluateContribution = {
       }
       return true;
     },
+    evaluateAllContributions: async (root, args, { Contributions, Schemas }) => {
+      const t = Date.now();
+      const allContributions = await Contributions.find({}, { fields: { _id: 1 } }).fetch();
+      console.log('all contributions: ', allContributions.length);
+      for (const contribution of allContributions) {
+        await treatOneContribution(contribution._id, { Contributions, Schemas });
+      }
+      console.log('total time to evaluate all: ', Date.now() - t, 'ms');
+      return true;
+    },
   },
 };
 
-addGraphQLResolvers(evaluateContribution);
+addGraphQLResolvers(newResolvers);
 addGraphQLMutation(`evaluateContribution(id: String!): Boolean`);
+addGraphQLMutation(`evaluateAllContributions: Boolean`);
