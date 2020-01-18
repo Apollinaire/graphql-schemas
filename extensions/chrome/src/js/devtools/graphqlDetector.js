@@ -78,24 +78,26 @@ class GraphQLDetector {
       });
 
       // contribute to the site
-      this.queryContributor(hash, requestBody.query, responseBody.data, url);
+      this.queryContributor(hash, requestBody.query, requestBody.variables, responseBody.data, url);
     }
   };
 
-  queryContributor = (hash, query, responseBody, url) => {
+  queryContributor = (hash, query, variables, responseBody, url) => {
     if (!this.shoudlContribute) {
       return;
     }
     // remove arguments' values in the querystring
     const cleanQuery = queryCleaner(query);
+    // remove variables values but keep the shape
+    const cleanVariables = jsonCleaner(variables);
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
     axios
       .post('http://localhost:5555/graphql', {
         operationName: 'createContributionFromExtension',
         query: `
-    mutation createContributionFromExtension($query: String, $url: String, $responseBody: JSON) {
-      createContribution(data: {query: $query, url: $url, responseBody: $responseBody}) {
+    mutation createContributionFromExtension($query: String, $url: String, $responseBody: JSON, $variables: JSON) {
+      createContribution(data: {query: $query, url: $url, responseBody: $responseBody, variables: $variables}) {
         data {
           _id
         }
@@ -105,6 +107,7 @@ class GraphQLDetector {
         variables: {
           query: cleanQuery,
           responseBody: cleanResponse,
+          variables: cleanVariables,
           url: url,
         },
       })
