@@ -53,15 +53,15 @@ class GraphQLDetector {
             // console.log(e);
             return;
           }
-          this.queryHandler(requestBody, parsedResponseBody, request.url);
+          this.queryHandler(requestBody, parsedResponseBody, request.url, req.request.headers);
         });
       }
     }
   };
 
-  queryHandler = (requestBody, responseBody, url) => {
+  queryHandler = (requestBody, responseBody, url, headers) => {
     // todo : handle errors
-    // todo : handle authorization header
+
     if (
       _.isObject(requestBody) &&
       _.isString(requestBody.query) &&
@@ -76,13 +76,13 @@ class GraphQLDetector {
         responseBody: responseBody.data,
         url,
       });
-
+      const referer = _.find(headers, { name: 'referer' });
       // contribute to the site
-      this.queryContributor(hash, requestBody.query, requestBody.variables, responseBody.data, url);
+      this.queryContributor(hash, requestBody.query, requestBody.variables, responseBody.data, url, referer);
     }
   };
 
-  queryContributor = (hash, query, variables, responseBody, url) => {
+  queryContributor = (hash, query, variables, responseBody, url, referer) => {
     if (!this.shoudlContribute) {
       return;
     }
@@ -92,12 +92,15 @@ class GraphQLDetector {
     const cleanVariables = jsonCleaner(variables);
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
+
+    const cleanReferer = (new URL(referer)).host;
+
     axios
       .post('http://localhost:5555/graphql', {
         operationName: 'createContributionFromExtension',
         query: `
-    mutation createContributionFromExtension($query: String, $url: String, $responseBody: JSON, $variables: JSON) {
-      createContribution(data: {query: $query, url: $url, responseBody: $responseBody, variables: $variables}) {
+    mutation createContributionFromExtension($query: String, $url: String, $referer: String, $responseBody: JSON, $variables: JSON) {
+      createContribution(data: {query: $query, url: $url, referer: $referer responseBody: $responseBody, variables: $variables}) {
         data {
           _id
         }
@@ -109,11 +112,12 @@ class GraphQLDetector {
           responseBody: cleanResponse,
           variables: cleanVariables,
           url: url,
+          referer: cleanReferer,
         },
       })
-      .then((res) => {
-        this.updateState(hash, { contributed: true });
-      })
+      // .then((res) => {
+        // this.updateState(hash, { contributed: true });
+      // })
       .catch((e) => {
         console.log('error in contribution');
         console.log(e);

@@ -79,13 +79,24 @@ const schema = {
   url: {
     type: String,
     searchable: true,
-    // regEx: SimpleSchema.RegEx.Url, // TODO : restaure this
+    regEx: SimpleSchema.RegEx.Url, // TODO : restaure this
     label: 'Url',
     optional: false,
     canRead: ['admins'],
     canCreate: ['guests'],
     canUpdate: ['admins'],
   },
+  referer: {
+    type: String,
+    searchable: true,
+    regEx: SimpleSchema.RegEx.Url, // TODO : restaure this
+    label: 'Origin',
+    optional: true,
+    canRead: ['admins'],
+    canCreate: ['guests'],
+    canUpdate: ['admins'],
+  },
+
 };
 
 export default schema;
