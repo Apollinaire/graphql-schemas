@@ -67,6 +67,15 @@ const schema = {
     canCreate: ['guests'],
     canUpdate: ['admins'],
   },
+  variables: {
+    type: Object,
+    blackbox: true,
+    label: 'Variables',
+    optional: true,
+    canRead: ['admins'],
+    canCreate: ['guests'],
+    canUpdate: ['admins'],
+  },
   url: {
     type: String,
     searchable: true,
