@@ -3,7 +3,7 @@ import contributionToTypes, { objectToArrayTypes, mergeTypes, arrayToObjectTypes
 
 const treatOneContribution = async (_id, { Contributions, Schemas }) => {
   const contribution = await Contributions.findOne({ _id });
-  const { query, responseBody, url } = contribution;
+  const { query, responseBody, variables, referer, url } = contribution;
   const types = contributionToTypes(query, responseBody);
   const schema = await Schemas.findOne({ endpoint: url });
   if (!schema) {
