@@ -8,6 +8,7 @@ export interface Arg {
   type?: {
     name?: string;
     kind?: string;
+    isListType?: boolean; 
   };
 }
 
@@ -163,12 +164,6 @@ export const mergeArgs = (args1: Args = {}, args2: Args = {}): Args => {
   _.each(args2, arg => {
     result = mergeNewArg(result, arg);
   });
-  if (!_.isEmpty(result)) {
-    // console.trace();
-    // console.log(args1);
-    // console.log(args2);
-    // console.log(result);
-  }
   return result;
 };
 
@@ -232,7 +227,6 @@ export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectType
 
 const contributionToTypes = (queryStr: string, responseBody: any): ObjectTypes => {
   const queryTypes = searchQueryTypes(queryStr);
-  // console.log(queryTypes);
   const responseBodytypes = searchResponseBodyTypes(responseBody);
 
   const types = mergeTypes(queryTypes, responseBodytypes);

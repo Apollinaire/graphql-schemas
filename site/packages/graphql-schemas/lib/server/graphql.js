@@ -49,24 +49,6 @@ const newResolvers = {
   Mutation: {
     evaluateContribution: async (root, { id: _id }, { Contributions, Schemas }) => {
       return treatOneContribution(_id, { Contributions, Schemas });
-      const contribution = await Contributions.findOne({ _id });
-      const { query, responseBody, url } = contribution;
-      const types = contributionToTypes(query, responseBody);
-      const schema = await Schemas.findOne({ endpoint: url });
-      if (!schema) {
-        // create new one
-        const newSchema = {
-          slug: slugify(url),
-          endpoint: url,
-          types: objectToArrayTypes(types),
-        };
-        await Schemas.insert(newSchema);
-      } else {
-        // merge types
-        const newTypes = objectToArrayTypes(mergeTypes(arrayToObjectTypes(schema.types), types));
-        await Schemas.update({ _id: schema._id }, { $set: { types: newTypes } });
-      }
-      return true;
     },
     evaluateAllContributions: async (root, args, { Contributions, Schemas }) => {
       const t = Date.now();
