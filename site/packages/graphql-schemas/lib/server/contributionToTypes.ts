@@ -2,26 +2,65 @@ import _ from 'underscore';
 import searchQueryTypes from './searchQueryTypes';
 import searchResponseBodyTypes from './searchResponseBodyTypes';
 
-export const arrayToObjectType = type => {
+export interface Arg {
+  name: string;
+  description: string;
+  type: {
+    name: string;
+    kind: string;
+  };
+}
+
+export interface Field {
+  name: string;
+  description?: string;
+  isListType?: boolean;
+  isNullableType?: boolean;
+  args?: Arg[];
+  type?: {
+    name?: string;
+    kind?: string;
+  };
+}
+
+export interface ArrayType {
+  name: string;
+  fields: Field[];
+}
+
+export type ArrayTypes = ArrayType[];
+
+export interface ObjectType {
+  name: string;
+  fields: {
+    [key: string]: Field;
+  };
+}
+
+export interface ObjectTypes {
+  [key: string]: ObjectType;
+}
+
+export const arrayToObjectType = (type: ArrayType): ObjectType => {
   return {
     ...type,
     fields: _.object(_.map(type.fields, field => [field.name, field])),
   };
 };
 
-export const arrayToObjectTypes = arrayTypes => {
-  return _.object(_.map(arrayTypes, (type, index) => [type.name, arrayToObjectType(type)]));
+export const arrayToObjectTypes = (arrayTypes: ArrayTypes): ObjectTypes => {
+  return _.object(_.map(arrayTypes, type => [type.name, arrayToObjectType(type)]));
 };
 
-export const objectToArrayType = type => {
+export const objectToArrayType = (type: ObjectType): ArrayType => {
   return { ...type, fields: _.values(type.fields) };
 };
 
-export const objectToArrayTypes = objectTypes => {
+export const objectToArrayTypes = (objectTypes: ObjectTypes): ArrayTypes => {
   return _.values(_.mapObject(objectTypes, type => objectToArrayType(type)));
 };
 
-export const isObjectType = type => {
+export const isObjectType = (type: any): boolean => {
   if (!_.isObject(type)) {
     return false;
   }
@@ -32,7 +71,7 @@ export const isObjectType = type => {
     return false;
   }
   let allFieldsOk = true;
-  _.each(type.fields, (value, key) => {
+  _.each(type.fields, (value: any, key) => {
     if (!_.isObject(value) || value.name !== key) {
       allFieldsOk = false;
     }
@@ -40,11 +79,9 @@ export const isObjectType = type => {
   return allFieldsOk;
 };
 
-const isArrayType = type => {
-  
-}
+// const isArrayType = type => {};
 
-export const mergeNewType = (types, newType) => {
+export const mergeNewType = (types: ObjectTypes, newType: ObjectType): ObjectTypes => {
   if (!types[newType.name]) {
     return {
       ...types,
@@ -65,7 +102,7 @@ export const mergeNewType = (types, newType) => {
   }
 };
 
-export const mergeTypes = (types1, types2) => {
+export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectTypes => {
   let result = {};
   _.each(types1, type => {
     result = mergeNewType(result, type);
@@ -76,7 +113,7 @@ export const mergeTypes = (types1, types2) => {
   return result;
 };
 
-const contributionToTypes = (queryStr, responseBody) => {
+const contributionToTypes = (queryStr: string, responseBody: any): ObjectTypes => {
   const queryTypes = searchQueryTypes(queryStr);
   const responseBodytypes = searchResponseBodyTypes(responseBody);
 

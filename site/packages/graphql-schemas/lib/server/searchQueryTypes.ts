@@ -1,8 +1,8 @@
 import { parse } from 'graphql';
-import { mergeTypes, mergeNewType } from './contributionToTypes';
+import { mergeTypes, mergeNewType, ObjectTypes } from './contributionToTypes';
 
 
-const searchQueryTypes = query => {
+const searchQueryTypes = (query: string): ObjectTypes => {
   let types = {};
   try {
     const docAST = parse(query);
