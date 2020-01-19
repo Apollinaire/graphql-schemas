@@ -9,7 +9,7 @@ import {
   ArgumentNode,
   ValueNode,
 } from 'graphql';
-import { mergeTypes, mergeNewType, ObjectTypes, ObjectField, Arg } from './contributionToTypes';
+import { mergeTypes, ObjectTypes, ObjectField, Arg } from './contributionToTypes';
 
 const searchQueryTypes = (query: string): ObjectTypes => {
   let types = {};
@@ -69,7 +69,7 @@ const searchFragmentTypes = (definition: FragmentDefinitionNode): ObjectTypes =>
 };
 
 const selectionIsField = (selection: SelectionNode): selection is FieldNode => {
-  return selection.kind === 'Field';
+  return selection?.kind === 'Field';
 };
 
 const getObjectFieldFromFieldNode = (selection: FieldNode): ObjectField => {

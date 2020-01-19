@@ -9,8 +9,8 @@ import _compact from 'lodash/compact';
 
 const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
   const [wrap, setWrap] = useState(true);
-  const lastKey = _last(_keys(args));
-  const shouldWrap = _keys(args).length > 2;
+
+  const shouldWrap = args.length > 2;
   return (
     <span onClick={() => setWrap(!wrap)} style={{ cursor: wrap ? 'pointer' : 'auto' }}>
       (
@@ -34,7 +34,7 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
                 ) : (
                   <span>{type.name}</span>
                 )}
-                {key !== lastKey && ', '}
+                {key < args.length - 1 && ', '}
               </span>
             );
           })}
@@ -42,6 +42,7 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
     </span>
   );
 };
+
 const DocField = ({ name, type: originalType, args = [], updateSelectedAt, index, getTypeByName, isListType }) => {
   const typeName = (originalType || {}).name || '';
   const type = getTypeByName(typeName);

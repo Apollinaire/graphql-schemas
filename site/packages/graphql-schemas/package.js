@@ -27,7 +27,7 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function (api) {
-  api.use(['ecmascript', 'meteortesting:mocha', 'vulcan:test', 'vulcan:lib']);
+  api.use(['ecmascript', 'typescript', 'meteortesting:mocha',/* 'vulcan:test', 'vulcan:lib'*/]);
   // api.mainModule('./test/client/index.js', 'client');
   api.mainModule('./test/server/index.js', 'server');
 });

@@ -15,6 +15,7 @@ const treatOneContribution = async (_id, { Contributions, Schemas }) => {
     };
     await Schemas.insert(newSchema);
   } else {
+    // console.log(JSON.stringify(arrayToObjectTypes(schema.types)))
     // merge types
     const newTypes = objectToArrayTypes(mergeTypes(arrayToObjectTypes(schema.types), types));
     await Schemas.update({ _id: schema._id }, { $set: { types: newTypes } });

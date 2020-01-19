@@ -1,16 +1,19 @@
 import _ from 'underscore';
 import searchQueryTypes from './searchQueryTypes';
 import searchResponseBodyTypes from './searchResponseBodyTypes';
-import merge from 'lodash/merge';
 
 export interface Arg {
   name: string;
   description?: string;
   type?: {
-    name: string;
-    kind: string;
+    name?: string;
+    kind?: string;
   };
 }
+
+export type Args = {
+  [key: string]: Arg;
+};
 
 export interface ArrayField {
   name: string;
@@ -62,6 +65,14 @@ export interface ObjectTypes {
   [key: string]: ObjectType;
 }
 
+export const arrayToObjectArgs = (fields: ArrayFields): ObjectFields => {
+  return _.object(_.compact(_.map(fields, field => (field?.name ? [field.name, field] : null))));
+};
+
+export const objectToArrayArgs = (fields: ObjectFields): ArrayFields => {
+  return _.values(_.mapObject(fields, objectToArrayField));
+};
+
 export const arrayToObjectField = (field: ArrayField): ObjectField => {
   return {
     ...field,
@@ -70,7 +81,7 @@ export const arrayToObjectField = (field: ArrayField): ObjectField => {
 };
 
 export const arrayToObjectFields = (fields: ArrayFields): ObjectFields => {
-  return _.object(_.compact(_.map(fields, field => (field?.name ? [field.name, field] : null))));
+  return _.object(_.compact(_.map(fields, field => (field?.name ? [field.name, arrayToObjectField(field)] : null))));
 };
 
 export const objectToArrayField = (field: ObjectField): ArrayField => {
@@ -81,13 +92,13 @@ export const objectToArrayField = (field: ObjectField): ArrayField => {
 };
 
 export const objectToArrayFields = (fields: ObjectFields): ArrayFields => {
-  return _.values(_.mapObject(fields, objectToArrayField))
-}
+  return _.values(_.mapObject(fields, objectToArrayField));
+};
 
 export const arrayToObjectType = (type: ArrayType): ObjectType => {
   return {
     ...type,
-    fields: _.object(_.map(_.compact(type.fields), field => [field.name, field])),
+    fields: arrayToObjectFields(type.fields),
   };
 };
 
@@ -124,26 +135,88 @@ export const isObjectType = (type: any): boolean => {
 
 // const isArrayType = type => {};
 
+export const mergeNewArg = (args: Args, newArg: Arg): Args => {
+  if (args[newArg.name]) {
+    return {
+      ...args,
+      [newArg.name]: newArg,
+    };
+  } else {
+    return {
+      ...args,
+      [newArg.name]: {
+        name: newArg.name,
+        type: {
+          ...(args[newArg.name]?.type || {}),
+          ...(newArg.type || {}),
+        },
+      },
+    };
+  }
+};
+
+export const mergeArgs = (args1: Args = {}, args2: Args = {}): Args => {
+  let result = {};
+  _.each(args1, arg => {
+    result = mergeNewArg(result, arg);
+  });
+  _.each(args2, arg => {
+    result = mergeNewArg(result, arg);
+  });
+  if (!_.isEmpty(result)) {
+    // console.trace();
+    // console.log(args1);
+    // console.log(args2);
+    // console.log(result);
+  }
+  return result;
+};
+
+export const mergeNewField = (fields: ObjectFields, newField: ObjectField) => {
+  if (!fields[newField.name]) {
+    return {
+      ...fields,
+      [newField.name]: newField,
+    };
+  } else {
+    return {
+      ...fields,
+      [newField.name]: {
+        ...fields[newField.name],
+        ...newField,
+        args: mergeArgs(fields[newField.name].args, newField.args),
+      },
+    };
+  }
+};
+
+export const mergeFields = (fields1: ObjectFields, fields2: ObjectFields): ObjectFields => {
+  let result = {};
+  _.each(fields1, field => {
+    result = mergeNewField(result, field);
+  });
+  _.each(fields2, field => {
+    result = mergeNewField(result, field);
+  });
+  return result;
+};
+
 export const mergeNewType = (types: ObjectTypes, newType: ObjectType): ObjectTypes => {
-  return merge(types, {[newType.name]: newType})
-  // if (!types[newType.name]) {
-  //   return {
-  //     ...types,
-  //     [newType.name]: newType,
-  //   };
-  // } else {
-  //   return {
-  //     ...types,
-  //     [newType.name]: {
-  //       ...types[newType.name],
-  //       ...newType,
-  //       fields: {
-  //         ...types[newType.name].fields,
-  //         ...newType.fields,
-  //       },
-  //     },
-  //   };
-  // }
+  if (!types[newType.name]) {
+    return {
+      ...types,
+      [newType.name]: newType,
+    };
+  } else {
+    return {
+      ...types,
+      [newType.name]: {
+        ...types[newType.name],
+        ...newType,
+        fields: mergeFields(types[newType.name].fields, newType.fields),
+      },
+    };
+  }
 };
 
 export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectTypes => {
@@ -159,7 +232,7 @@ export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectType
 
 const contributionToTypes = (queryStr: string, responseBody: any): ObjectTypes => {
   const queryTypes = searchQueryTypes(queryStr);
-  console.log(queryTypes)
+  // console.log(queryTypes);
   const responseBodytypes = searchResponseBodyTypes(responseBody);
 
   const types = mergeTypes(queryTypes, responseBodytypes);
