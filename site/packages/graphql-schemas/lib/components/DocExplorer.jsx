@@ -16,8 +16,8 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
       (
       {shouldWrap && wrap
         ? '...'
-        : _map(args, ({ name, type: typeName }, key) => {
-            const type = getTypeByName(typeName);
+        : _map(args, ({ name, type: originalType }, key) => {
+            const type = getTypeByName(originalType?.name);
             return (
               <span key={name}>
                 {name + ': '}

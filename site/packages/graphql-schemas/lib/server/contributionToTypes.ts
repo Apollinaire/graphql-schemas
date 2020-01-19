@@ -1,17 +1,18 @@
 import _ from 'underscore';
 import searchQueryTypes from './searchQueryTypes';
 import searchResponseBodyTypes from './searchResponseBodyTypes';
+import merge from 'lodash/merge';
 
 export interface Arg {
   name: string;
-  description: string;
-  type: {
+  description?: string;
+  type?: {
     name: string;
     kind: string;
   };
 }
 
-export interface Field {
+export interface ArrayField {
   name: string;
   description?: string;
   isListType?: boolean;
@@ -23,28 +24,70 @@ export interface Field {
   };
 }
 
+export type ArrayFields = ArrayField[];
+
+export interface ObjectField {
+  name: string;
+  description?: string;
+  isListType?: boolean;
+  isNullableType?: boolean;
+  args?: {
+    [key: string]: Arg;
+  };
+  type?: {
+    name?: string;
+    kind?: string;
+  };
+}
+
+export interface ObjectFields {
+  [key: string]: ObjectField;
+}
+
 export interface ArrayType {
   name: string;
-  fields: Field[];
+  fields: ArrayFields;
+  kind: string;
 }
 
 export type ArrayTypes = ArrayType[];
 
 export interface ObjectType {
   name: string;
-  fields: {
-    [key: string]: Field;
-  };
+  fields: ObjectFields;
+  kind: string;
 }
 
 export interface ObjectTypes {
   [key: string]: ObjectType;
 }
 
+export const arrayToObjectField = (field: ArrayField): ObjectField => {
+  return {
+    ...field,
+    args: _.object(_.compact(_.map(field.args || [], arg => (arg?.name ? [arg.name, arg] : null)))),
+  };
+};
+
+export const arrayToObjectFields = (fields: ArrayFields): ObjectFields => {
+  return _.object(_.compact(_.map(fields, field => (field?.name ? [field.name, field] : null))));
+};
+
+export const objectToArrayField = (field: ObjectField): ArrayField => {
+  return {
+    ...field,
+    args: _.compact(_.values(field.args)),
+  };
+};
+
+export const objectToArrayFields = (fields: ObjectFields): ArrayFields => {
+  return _.values(_.mapObject(fields, objectToArrayField))
+}
+
 export const arrayToObjectType = (type: ArrayType): ObjectType => {
   return {
     ...type,
-    fields: _.object(_.map(type.fields, field => [field.name, field])),
+    fields: _.object(_.map(_.compact(type.fields), field => [field.name, field])),
   };
 };
 
@@ -53,7 +96,7 @@ export const arrayToObjectTypes = (arrayTypes: ArrayTypes): ObjectTypes => {
 };
 
 export const objectToArrayType = (type: ObjectType): ArrayType => {
-  return { ...type, fields: _.values(type.fields) };
+  return { ...type, fields: objectToArrayFields(type.fields) };
 };
 
 export const objectToArrayTypes = (objectTypes: ObjectTypes): ArrayTypes => {
@@ -82,24 +125,25 @@ export const isObjectType = (type: any): boolean => {
 // const isArrayType = type => {};
 
 export const mergeNewType = (types: ObjectTypes, newType: ObjectType): ObjectTypes => {
-  if (!types[newType.name]) {
-    return {
-      ...types,
-      [newType.name]: newType,
-    };
-  } else {
-    return {
-      ...types,
-      [newType.name]: {
-        ...types[newType.name],
-        ...newType,
-        fields: {
-          ...types[newType.name].fields,
-          ...newType.fields,
-        },
-      },
-    };
-  }
+  return merge(types, {[newType.name]: newType})
+  // if (!types[newType.name]) {
+  //   return {
+  //     ...types,
+  //     [newType.name]: newType,
+  //   };
+  // } else {
+  //   return {
+  //     ...types,
+  //     [newType.name]: {
+  //       ...types[newType.name],
+  //       ...newType,
+  //       fields: {
+  //         ...types[newType.name].fields,
+  //         ...newType.fields,
+  //       },
+  //     },
+  //   };
+  // }
 };
 
 export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectTypes => {
@@ -115,6 +159,7 @@ export const mergeTypes = (types1: ObjectTypes, types2: ObjectTypes): ObjectType
 
 const contributionToTypes = (queryStr: string, responseBody: any): ObjectTypes => {
   const queryTypes = searchQueryTypes(queryStr);
+  console.log(queryTypes)
   const responseBodytypes = searchResponseBodyTypes(responseBody);
 
   const types = mergeTypes(queryTypes, responseBodytypes);

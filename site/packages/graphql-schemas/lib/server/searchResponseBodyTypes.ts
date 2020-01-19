@@ -1,8 +1,8 @@
 import merge from 'lodash/merge';
 import _ from 'underscore';
-import { mergeTypes, mergeNewType, Field, ObjectTypes } from './contributionToTypes';
+import { mergeTypes, mergeNewType, ObjectField, ObjectTypes } from './contributionToTypes';
 
-const fieldFromValue = (value: any, name: string): Field => {
+const fieldFromValue = (value: any, name: string): ObjectField => {
   if (value === 'null') return { name, isNullableType: true };
   if (value === 'string') return { name, type: { name: 'String', kind: 'SCALAR' } };
   if (value === 'boolean') return { name, type: { name: 'Boolean', kind: 'SCALAR' } };
@@ -43,7 +43,7 @@ const getRecursiveTypes = (result: {[key:string]: any}): ObjectTypes => {
                 })
               )
             ),
-            (field: Field) => [field.name, field]
+            (field: ObjectField) => [field.name, field]
           )
         ),
       };
