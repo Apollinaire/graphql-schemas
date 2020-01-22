@@ -1,3 +1,5 @@
+import _find from 'lodash/find';
+import _sortBy from 'lodash/sortBy';
 import { Utils } from 'meteor/vulcan:core';
 import { fieldPermissions } from './permissions';
 import SimpleSchema from 'simpl-schema';
@@ -31,12 +33,20 @@ const schema = {
     blackbox: true,
     typeName: 'Type',
     ...fieldPermissions,
+    resolveAs: {
+      type: 'Type',
+      resolver: ({ types }) => _find(types, (type) => type.name === 'Query')
+    }
   },
   mutationType: {
     type: Object,
     blackbox: true,
     typeName: 'Type',
     ...fieldPermissions,
+    resolveAs: {
+      type: 'Type',
+      resolver: ({ types }) => _find(types, (type) => type.name === 'Mutation')
+    }
   },
 
   subscriptionType: {
@@ -48,6 +58,11 @@ const schema = {
   types: {
     type: Array,
     ...fieldPermissions,
+    resolveAs: {
+      // type: 'Type',
+      resolver: ({ types }) => _sortBy(types, 'name')
+    }
+
   },
   'types.$': {
     type: Object,
