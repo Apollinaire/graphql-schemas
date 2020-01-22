@@ -12,7 +12,7 @@ const Args = ({ args, updateSelectedAt, index, getTypeByName }) => {
 
   const shouldWrap = args.length > 2;
   return (
-    <span onClick={() => setWrap(!wrap)} style={{ cursor: wrap ? 'pointer' : 'auto' }}>
+    <span onClick={() => setWrap(!wrap)} style={{ cursor: shouldWrap ? 'pointer' : 'auto' }}>
       (
       {shouldWrap && wrap
         ? '...'
