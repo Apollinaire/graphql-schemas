@@ -92,8 +92,10 @@ class GraphQLDetector {
     const cleanVariables = jsonCleaner(variables);
     // replace leaf values in the responseBody by their type
     const cleanResponse = jsonCleaner(responseBody);
-
-    const cleanReferer = (new URL(referer)).host;
+    let cleanReferer;
+    try {
+      cleanReferer = referer ? new URL(referer).host : undefined;
+    } catch (error) {}
 
     axios
       .post('http://localhost:5555/graphql', {
@@ -116,7 +118,7 @@ class GraphQLDetector {
         },
       })
       // .then((res) => {
-        // this.updateState(hash, { contributed: true });
+      // this.updateState(hash, { contributed: true });
       // })
       .catch((e) => {
         console.log('error in contribution');
