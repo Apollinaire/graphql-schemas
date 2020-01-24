@@ -1,3 +1,27 @@
+# GraphQL Schemas Chrome Extension
+
+Chrome Devtools panel to see graphql queries on any product.
+
+## Installation
+
+Clone the repo, cd here, `npm i` and then `npm run build` or `npm start` if you want to have live refresh.
+Go to `chrome://extensions`, toggle 'developer mode' and then 'install unpacked'. Choose the `build` folder that has been created in this directory by the build/start command.
+
+You should see the panel added when you open the dev-tools.
+
+## Usage
+
+Go on a site. Open the dev tools. Go to the GraphQL Schemas panel. Look at the queries detected.
+
+
+
+
+
+
+
+
+
+
 # Chrome Extension Webpack Boilerplate
 
 A basic foundation boilerplate for rich Chrome Extensions using [Webpack](https://webpack.github.io/) to help you write modular and modern Javascript code, load CSS easily and [automatic reload the browser on code changes](https://webpack.github.io/docs/webpack-dev-server.html#automatic-refresh).

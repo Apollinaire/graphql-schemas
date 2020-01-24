@@ -6,7 +6,7 @@
   },
   "scripts": {
     "prestart": "node .vulcan/prestart_vulcan.js",
-    "start": "meteor --settings settings.json --port 8000",
+    "start": "meteor --settings settings.json --port 5555",
     "lint": "eslint --cache --ext .jsx,js packages",
     "test-server": "TEST_CLIENT=0 TEST_CHROME_ARGS='--remote-debugging-port=9222' TEST_BROWSER_DRIVER=chrome meteor test-packages ./packages/* --port 60859 --driver-package meteortesting:mocha --raw-logs"
   },
