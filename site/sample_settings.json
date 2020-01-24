@@ -1,25 +1,17 @@
 {
   "public": {
 
-    "title": "Vulcan.js",
-    "tagline":"The React/GraphQL Full-stack Framework",
+    "title": "GraphQL Schemas",
+    "tagline":"Explore GraphQL Schemas",
 
     "faviconUrl": "/favicon.ico",
 
     "locale": "en"
 
   },
-
-  "defaultEmail": "hello@world.com",
-  "mailUrl": "smtp://username%40yourdomain.mailgun.org:yourpassword123@smtp.mailgun.org:587/",
-
   "oAuth": {
-    "twitter": {
-      "consumerKey": "foo",
-      "secret": "bar"
-    },
-    "facebook": {
-      "appId": "foo",
+    "github": {
+      "clientId": "foo",
       "secret": "bar"
     }
   }
