@@ -14,5 +14,10 @@
       "clientId": "foo",
       "secret": "bar"
     }
+  },
+  "apolloServer": {
+    "jsonParserOptions": {
+      "limit": "10mb"
+    }
   }
 }
