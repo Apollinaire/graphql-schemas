@@ -10,7 +10,6 @@ function isValidRequest(request, response) {
     response &&
     request.method === 'POST' &&
     request.url &&
-    !~request.url.indexOf('localhost:') &&
     response.status === 200 &&
     ~(response.content?.mimeType || '').toLowerCase().indexOf('application/json') &&
     ~(request.postData?.mimeType || '').toLowerCase().indexOf('application/json') &&
@@ -84,6 +83,10 @@ class GraphQLDetector {
 
   queryContributor = (hash, query, variables, responseBody, url, referer) => {
     if (!this.shoudlContribute) {
+      return;
+    }
+
+    if ( !~url.indexOf('localhost:') ) {
       return;
     }
     // remove arguments' values in the querystring
