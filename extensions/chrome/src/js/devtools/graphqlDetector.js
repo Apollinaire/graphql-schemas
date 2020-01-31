@@ -18,9 +18,9 @@ function isValidRequest(request, response) {
 }
 
 class GraphQLDetector {
-  constructor(shoudlContribute = false) {
+  constructor(shouldContribute = false) {
     this.queries = {};
-    this.shoudlContribute = shoudlContribute;
+    this.shouldContribute = shouldContribute;
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
   eventHandler = (req) => {
@@ -82,11 +82,12 @@ class GraphQLDetector {
   };
 
   queryContributor = (hash, query, variables, responseBody, url, referer) => {
-    if (!this.shoudlContribute) {
+    if (!this.shouldContribute) {
       return;
     }
 
-    if ( !~url.indexOf('localhost:') ) {
+    if (~url.indexOf('localhost:')) {
+      console.log('nope')
       return;
     }
     // remove arguments' values in the querystring
@@ -120,9 +121,10 @@ class GraphQLDetector {
           referer: cleanReferer,
         },
       })
-      // .then((res) => {
-      // this.updateState(hash, { contributed: true });
-      // })
+      .then((res) => {
+        console.log('uploaded contribution', res);
+        // this.updateState(hash, { contributed: true });
+      })
       .catch((e) => {
         console.log('error in contribution');
         console.log(e);
