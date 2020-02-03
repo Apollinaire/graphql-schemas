@@ -55,7 +55,6 @@ class Home extends React.Component {
 
     return (
       <div>
-        <Components.AccountsLoginForm />
         <Components.FormControl
           type='search'
           placeholder='sidebar.io/graphql'
