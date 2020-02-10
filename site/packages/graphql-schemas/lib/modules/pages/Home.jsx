@@ -5,7 +5,7 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <Components.SchemaList />
+        <Components.FeaturedSchemas limit={6} />
       </div>
     );
   }

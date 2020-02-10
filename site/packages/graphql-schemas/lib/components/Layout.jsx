@@ -1,4 +1,5 @@
 import React from 'react';
+import { registerComponent } from 'meteor/vulcan:core';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -16,4 +17,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+registerComponent({ name: 'Layout', component: Layout });
