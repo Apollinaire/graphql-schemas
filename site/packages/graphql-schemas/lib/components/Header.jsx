@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Components } from 'meteor/vulcan:core';
 
 const Header = () => {
   return (
     <header className='navbar navbar-expand navbar-dark'>
-      <div className='navbar-brand'>Logo</div>
-      <div className='navbar-nav ml-md-auto'>
-        <a href='https://github.com/apollinaire/graphql-schemas'>Github</a>
+      <Link className='navbar-brand' to='/'>GraphQL <b>Schemas</b></Link>
+      <div className='navbar-nav ml-auto'>
+        <a href='https://github.com/apollinaire/graphql-schemas' className='nav-link'>Github</a>
         <Components.AccountsLoginForm />
       </div>
     </header>
