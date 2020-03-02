@@ -7,7 +7,7 @@ import SchemaCard from './SchemaCard';
 const FeaturedSchemas = ({ results }) => {
   return (
     <div>
-      {_map(results, SchemaCard)}
+      {_map(results, (schema) => <SchemaCard schema={schema} key={schema._id}/>)}
     </div>
   );
 };
