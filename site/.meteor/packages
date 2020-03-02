@@ -27,4 +27,4 @@ accounts-github@1.4.2
 # example-forms
 graphql-schemas
 vulcan:admin
-typescript
+typescript@3.7.5
