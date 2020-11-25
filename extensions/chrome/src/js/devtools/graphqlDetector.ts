@@ -23,6 +23,10 @@ class GraphQLDetector {
     this.shouldContribute = shouldContribute;
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
+  queries: Record<string, any>;
+  shouldContribute: boolean;
+  App: any;
+
   eventHandler = (req) => {
     if (typeof req !== 'object') return;
     const { request, response } = req;
@@ -54,6 +58,8 @@ class GraphQLDetector {
           }
           this.queryHandler(requestBody, parsedResponseBody, request.url, req.request.headers);
         });
+      } else if (Array.isArray(requestBody)) {
+        console.log('todo handle Apollo batch');
       }
     }
   };
@@ -87,7 +93,7 @@ class GraphQLDetector {
     }
 
     if (~url.indexOf('localhost:')) {
-      console.log('nope')
+      console.log('nope');
       return;
     }
     // remove arguments' values in the querystring
