@@ -30,7 +30,8 @@ var server =
     hot: true,
     contentBase: path.join(__dirname, "../build"),
     headers: { "Access-Control-Allow-Origin": "*" },
-    disableHostCheck: true
+    disableHostCheck: true,
+    clientLogLevel: "warn"
   });
 
 server.listen(env.PORT);

@@ -1,7 +1,6 @@
 import _ from 'underscore';
 import React from 'react';
 import { render } from 'react-dom';
-import log from '../common/log/panel';
 
 interface Query {
   hits: number;
@@ -16,12 +15,11 @@ interface State {
 
 class App extends React.Component<{}, State> {
   render() {
-    log("hi hi")
     // const queries = Object.keys(this.state).map((key) => ({ key, ...this.state[key] })) || [];
     // console.log(queries);
     return (
       <div style={{ backgroundColor: 'white' }}>
-        Hi there
+        Hi there :)
         {/* {queries.map((query) => {
           return (
             <details key={query.key}>

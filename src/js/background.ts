@@ -1,6 +1,8 @@
 import '../img/icon-128.png';
 import '../img/icon-34.png';
-import log from './common/log/background';
+import log from './lib/log/background';
+
+log("UP")
 
 var openCount = 0;
 chrome.runtime.onConnect.addListener(function (port) {
@@ -18,4 +20,3 @@ chrome.runtime.onConnect.addListener(function (port) {
     });
   }
 });
-log('hola :)')

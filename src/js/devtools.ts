@@ -1,6 +1,6 @@
-import log from './common/log/devtools';
 import GraphQLDetector from './devtools/graphqlDetector';
+import log from './lib/log/devtools';
 
+log('UP');
 new GraphQLDetector();
-log("hola")
 chrome.devtools.panels.create('GraphQL Schemas', '', 'panel.html');

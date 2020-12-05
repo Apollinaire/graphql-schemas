@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import log from '../lib/log/devtools';
 import hashCode from './hashCode';
 
 function isValidRequest(request, response) {
@@ -17,10 +18,12 @@ function isValidRequest(request, response) {
 class GraphQLDetector {
   constructor() {
     this.queries = {};
+    this.inspectedWindowId = chrome.devtools.inspectedWindow.tabId;
+    log(this.inspectedWindowId);
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
   queries: Record<string, any>;
-  App: any;
+  inspectedWindowId: number;
 
   eventHandler = (req) => {
     if (typeof req !== 'object') return;
