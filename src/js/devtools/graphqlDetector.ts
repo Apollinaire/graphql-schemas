@@ -1,8 +1,5 @@
 import _ from 'underscore';
 import hashCode from './hashCode';
-import axios from 'axios';
-import jsonCleaner from './jsonCleaner';
-import queryCleaner from './queryCleaner';
 
 function isValidRequest(request, response) {
   return (
@@ -18,13 +15,11 @@ function isValidRequest(request, response) {
 }
 
 class GraphQLDetector {
-  constructor(shouldContribute = false) {
+  constructor() {
     this.queries = {};
-    this.shouldContribute = shouldContribute;
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
   queries: Record<string, any>;
-  shouldContribute: boolean;
   App: any;
 
   eventHandler = (req) => {
@@ -81,60 +76,7 @@ class GraphQLDetector {
         responseBody: responseBody.data,
         url,
       });
-      const referer = _.find(headers, { name: 'referer' });
-      // contribute to the site
-      this.queryContributor(hash, requestBody.query, requestBody.variables, responseBody.data, url, referer);
     }
-  };
-
-  queryContributor = (hash, query, variables, responseBody, url, referer) => {
-    if (!this.shouldContribute) {
-      return;
-    }
-
-    if (~url.indexOf('localhost:')) {
-      console.log('nope');
-      return;
-    }
-    // remove arguments' values in the querystring
-    const cleanQuery = queryCleaner(query);
-    // remove variables values but keep the shape
-    const cleanVariables = jsonCleaner(variables);
-    // replace leaf values in the responseBody by their type
-    const cleanResponse = jsonCleaner(responseBody);
-    let cleanReferer;
-    try {
-      cleanReferer = referer ? new URL(referer).host : undefined;
-    } catch (error) {}
-
-    axios
-      .post('http://localhost:5555/graphql', {
-        operationName: 'createContributionFromExtension',
-        query: `
-    mutation createContributionFromExtension($query: String, $url: String, $referer: String, $responseBody: JSON, $variables: JSON) {
-      createContribution(data: {query: $query, url: $url, referer: $referer responseBody: $responseBody, variables: $variables}) {
-        data {
-          _id
-        }
-      }
-    }    
-    `,
-        variables: {
-          query: cleanQuery,
-          responseBody: cleanResponse,
-          variables: cleanVariables,
-          url: url,
-          referer: cleanReferer,
-        },
-      })
-      .then((res) => {
-        console.log('uploaded contribution', res);
-        // this.updateState(hash, { contributed: true });
-      })
-      .catch((e) => {
-        console.log('error in contribution');
-        console.log(e);
-      });
   };
 
   updateState = (hash, newState) => {
@@ -153,20 +95,6 @@ class GraphQLDetector {
       this.queries[hash] = {
         hits: 1,
         ...newState,
-      };
-    }
-    // update the app state
-    if (this.App && _.isFunction(this.App.setState)) {
-      this.App.setState({ [hash]: this.queries[hash] });
-    }
-  };
-
-  linkApp = (component) => {
-    this.App = component;
-    if (!_.isEmpty(this.queries)) {
-      this.App.state = {
-        ...this.App.state,
-        ...this.queries,
       };
     }
   };

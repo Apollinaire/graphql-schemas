@@ -23,9 +23,9 @@ var options = {
   entry: {
     popup: path.join(__dirname, 'src', 'js', 'popup.js'),
     options: path.join(__dirname, 'src', 'js', 'options.js'),
-    background: path.join(__dirname, 'src', 'js', 'background.js'),
-    devtools: path.join(__dirname, 'src', 'js', 'devtools.js'),
-    panel: path.join(__dirname, 'src', 'js', 'panel.js'),
+    background: path.join(__dirname, 'src', 'js', 'background.ts'),
+    devtools: path.join(__dirname, 'src', 'js', 'devtools.ts'),
+    panel: path.join(__dirname, 'src', 'js', 'panel.ts'),
   },
   output: {
     path: path.join(__dirname, 'build'),

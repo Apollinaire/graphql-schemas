@@ -1,23 +1,28 @@
 import _ from 'underscore';
 import React from 'react';
 import { render } from 'react-dom';
-import GraphQLDetector from './devtools/graphqlDetector';
+import log from '../common/log/panel';
 
-const g = new GraphQLDetector(false);
+interface Query {
+  hits: number;
+  url: string;
+  requestBody: any;
+  responseBody: any;
+}
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {};
-    g.linkApp(this);
-  }
+interface State {
+  [key: string]: Query;
+}
 
+class App extends React.Component<{}, State> {
   render() {
-    const queries = Object.keys(this.state).map(key => ({ key, ...this.state[key] })) || [];
+    log("hi hi")
+    // const queries = Object.keys(this.state).map((key) => ({ key, ...this.state[key] })) || [];
     // console.log(queries);
     return (
       <div style={{ backgroundColor: 'white' }}>
-        {queries.map(query => {
+        Hi there
+        {/* {queries.map((query) => {
           return (
             <details key={query.key}>
               <summary>
@@ -39,10 +44,14 @@ class App extends React.Component {
               <hr />
             </details>
           );
-        })}
+        })} */}
       </div>
     );
   }
 }
 
-render(<App />, document.getElementById('app-container'));
+const panel = () => {
+  render(<App />, document.getElementById('app-container'));
+};
+
+export default panel;
