@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import log from '../lib/log/devtools';
+import { Query, OnSyncFunction, QueryStore } from '../types/queries';
 import hashCode from './hashCode';
 
 function isValidRequest(request, response) {
@@ -18,14 +19,13 @@ function isValidRequest(request, response) {
 class GraphQLDetector {
   constructor() {
     this.queries = {};
-    this.inspectedWindowId = chrome.devtools.inspectedWindow.tabId;
-    log(this.inspectedWindowId);
+    this.onSync = [];
     chrome.devtools.network.onRequestFinished.addListener(this.eventHandler);
   }
-  queries: Record<string, any>;
-  inspectedWindowId: number;
+  queries: QueryStore;
+  onSync: Array<OnSyncFunction>;
 
-  eventHandler = (req) => {
+  private eventHandler = (req) => {
     if (typeof req !== 'object') return;
     const { request, response } = req;
     if (isValidRequest(request, response)) {
@@ -62,7 +62,7 @@ class GraphQLDetector {
     }
   };
 
-  queryHandler = (requestBody, responseBody, url, headers) => {
+  private queryHandler = (requestBody, responseBody, url, headers) => {
     // todo : handle errors
 
     if (
@@ -74,7 +74,7 @@ class GraphQLDetector {
     ) {
       const hash = hashCode(url + requestBody.query);
 
-      this.updateState(hash, {
+      this.updateQuery(hash, {
         requestBody,
         responseBody: responseBody.data,
         url,
@@ -82,24 +82,35 @@ class GraphQLDetector {
     }
   };
 
-  updateState = (hash, newState) => {
+  private updateQuery = (hash: number, newState: Pick<Query, 'requestBody' | 'responseBody' | 'url'>) => {
     if (!hash || !newState) {
       return;
     }
     // set or update the local state for queries
-    if (this.queries[hash]) {
-      const oldQuery = this.queries[hash];
-      this.queries[hash] = {
+    let udpatedQuery: Query = this.queries[hash];
+
+    if (udpatedQuery) {
+      const oldQuery = udpatedQuery;
+      udpatedQuery = {
         ...oldQuery,
         hits: (oldQuery.hits || 1) + 1,
         ...newState,
       };
     } else {
-      this.queries[hash] = {
+      udpatedQuery = {
         hits: 1,
         ...newState,
       };
     }
+    this.sync({ [hash]: udpatedQuery });
+  };
+
+  private sync = (udpatedQueries: QueryStore) => {
+    this.onSync.forEach((onSync) => onSync(udpatedQueries));
+  };
+  public addOnSync = (onSync: OnSyncFunction) => {
+    this.onSync.push(onSync);
+    onSync(this.queries);
   };
 }
 

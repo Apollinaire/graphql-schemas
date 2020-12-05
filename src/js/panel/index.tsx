@@ -1,22 +1,35 @@
 import _ from 'underscore';
 import React from 'react';
 import { render } from 'react-dom';
-
-interface Query {
-  hits: number;
-  url: string;
-  requestBody: any;
-  responseBody: any;
-}
+import { Query, OnSyncFunction } from '../types/queries';
+import log from '../lib/log/panel';
 
 interface State {
-  [key: string]: Query;
+  queries: { [key: string]: Query };
 }
 
 class App extends React.Component<{}, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      queries: {},
+    };
+    const onSync: OnSyncFunction = (modifiedQueries) => {
+      this.setState((prevState) => ({
+        ...prevState,
+        queries: {
+          ...prevState.queries,
+          ...modifiedQueries,
+        },
+      }));
+    };
+    (window as any).__GRAPQHL_EXTENSION__SYNC__ = onSync;
+  }
+
   render() {
     // const queries = Object.keys(this.state).map((key) => ({ key, ...this.state[key] })) || [];
     // console.log(queries);
+    log(this.state);
     return (
       <div style={{ backgroundColor: 'white' }}>
         Hi there :)
